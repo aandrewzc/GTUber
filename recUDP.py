@@ -1,7 +1,7 @@
 import socket
 
-# UDP_IP = "localhost"
-UDP_IP = socket.gethostname()
+UDP_IP = "192.168.1.113"
+# UDP_IP = socket.gethostname()
 UDP_PORT = 5005
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
