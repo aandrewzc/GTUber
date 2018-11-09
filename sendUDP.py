@@ -1,6 +1,7 @@
 import socket
 
-UDP_IP = "192.168.1.125"
+# UDP_IP = "localhost"
+UDP_IP = socket.gethostname()
 UDP_PORT = 5005
 
 addr = (UDP_IP, UDP_PORT)
@@ -11,6 +12,4 @@ print("UDP target port: %s" % UDP_PORT)
 print("message: %s" % message)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-while True:
-	sock.sendto(message, addr)
+sock.sendto(message, addr)
