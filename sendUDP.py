@@ -67,8 +67,10 @@ print("UDP target port: %s" % UDP_PORT)
 print("message: %s" % message)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
+count = 0
 while True:
+    count += 1
     sock.sendto(message, addr)
-    print("sent message: %s" % message)
+    sock.sendto(str(count), addr)
+    print("sent message: %s %d" % (message, count)
     time.sleep(1)
