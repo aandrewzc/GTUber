@@ -1,14 +1,17 @@
-import socket
+'''
+recUDP.py
+
+Script to receive IMU data, run on a laptop
+
+Communicates machine's IP address via an MQTT server connection.
+Once this is established, communication can continue via UDP.
+'''
+
 import time
+import socket
 import paho.mqtt.client as mqtt
 
-UDP_IP = socket.gethostbyname(socket.gethostname())
-UDP_PORT = 5005
-
-connected_flag = False
-ack_flag = False
-
-# MQTT connection to ensure proper UDP_IP address is used
+# MQTT callback functions
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         global connected_flag 
@@ -23,7 +26,15 @@ def on_message(client, userdata, message):
 		print("%s" % str(message.payload))
 		ack_flag = True 
 
-# broker to connect to
+# flags for connection setup
+connected_flag = False
+ack_flag = False
+
+# UDP IP and port number
+UDP_IP = socket.gethostbyname(socket.gethostname())
+UDP_PORT = 5005
+
+# setup MQTT connection
 broker = "broker.hivemq.com"
 topic = "ece180d/gtuber/unity_ip" 
 
@@ -32,16 +43,19 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect(broker)  # connect to broker
-client.loop_start()  # start the loop
+print("Connecting to %s" % broker)
+client.connect(broker)
+client.loop_start()
 
-print("Subscribing to topic")
+print("Subscribing to %s" % topic)
 client.subscribe(topic)
 
+# poll until connected to server
 while not connected_flag:
 	print("Waiting for connection")
 	time.sleep(1)
 
+# publish IP address until an ACK is received
 while not ack_flag:
 	print(UDP_IP)
 	client.publish(topic, UDP_IP)
@@ -56,5 +70,6 @@ sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((UDP_IP, UDP_PORT))
 
 while True:
-	data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+	data, addr = sock.recvfrom(1024)
 	print("received message: %s" % data)
+
