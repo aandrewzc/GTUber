@@ -72,5 +72,5 @@ while True:
     count += 1
     sock.sendto(message, addr)
     sock.sendto(str(count), addr)
-    print("sent message: %s %d" % (message, count)
+    print("sent message: %s %d" % (message, count))
     time.sleep(1)
