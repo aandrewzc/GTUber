@@ -7,9 +7,18 @@ Communicates machine's IP address via an MQTT server connection.
 Once this is established, communication can continue via UDP.
 '''
 
+import sys, signal
 import time
 import socket
 import paho.mqtt.client as mqtt
+
+def handle_ctrl_c(signal, frame):
+	global count
+	print(count)
+	sys.exit(130) # 130 is standard exit code for ctrl-c
+
+#This will capture exit when using Ctrl-C
+signal.signal(signal.SIGINT, handle_ctrl_c)
 
 # MQTT callback functions
 def on_connect(client, userdata, flags, rc):
@@ -70,8 +79,17 @@ client.disconnect()
 print("Setting up UDP connection")
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((UDP_IP, UDP_PORT))
+sock.setblocking(0)
 
+count = 0
 while True:
-	data, addr = sock.recvfrom(1024)
-	print("received message: %s from %s" % (data, addr)
+	try:
+		data, addr = sock.recvfrom(1024)
+		print("received message: %s from %s" % (data, addr[0]))
+		sock.sendto("ACK", addr)
+		print("sent ACK")
+	except:
+		pass
+	count += 1
+
 
