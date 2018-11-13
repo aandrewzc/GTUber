@@ -54,7 +54,8 @@ while not ip_flag:
     time.sleep(1)
 
 # send ACK and close server connection
-client.publish(topic, "ACK")
+ack = "ACK" + socket.gethostbyname(socket.gethostname())
+client.publish(topic, ack)
 client.loop_stop()
 client.disconnect()
 

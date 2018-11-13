@@ -22,8 +22,10 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, message):
 	global ack_flag
-	if str(message.payload) == "ACK":
+	global PI_IP
+	if str(message.payload)[0:3] == "ACK":
 		print("%s" % str(message.payload))
+		PI_IP = str(message.payload)[3:]
 		ack_flag = True 
 
 # flags for connection setup
@@ -71,5 +73,5 @@ sock.bind((UDP_IP, UDP_PORT))
 
 while True:
 	data, addr = sock.recvfrom(1024)
-	print("received message: %s" % data)
+	print("received message: %s from %s" % (data, addr)
 
