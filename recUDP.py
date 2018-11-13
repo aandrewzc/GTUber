@@ -77,17 +77,22 @@ client.disconnect()
 
 # setup UDP connection
 print("Setting up UDP connection")
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((UDP_IP, UDP_PORT))
-sock.setblocking(0)
+udp_addr = (UDP_IP, UDP_PORT)
+udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+udp_sock.bind(udp_addr)
+udp_sock.setblocking(0)
+
+local_addr = ("127.0.0.1", "11000")
+local_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+local_sock.bind(local_addr)
+local_sock.setblocking(0)
 
 count = 0
 while True:
 	try:
-		data, addr = sock.recvfrom(1024)
+		data, addr = udp_sock.recvfrom(1024)
 		print("received message: %s from %s" % (data, addr[0]))
-		sock.sendto("ACK", addr)
-		print("sent ACK")
+		local_sock.sendto(data, local_addr)
 	except:
 		pass
 	count += 1
