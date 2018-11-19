@@ -158,35 +158,35 @@ kalmanY = 0.0
 ip_flag = False
 
 # UDP IP and port number variables
-UDP_IP = "0"
-UDP_PORT = 5005
+UDP_IP = "131.179.39.90"
+UDP_PORT = 11000
 
 # Setup MQTT connection
 broker = "broker.hivemq.com"
 topic = "ece180d/gtuber/unity_ip"
 
 print("Creating new instance")
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+#client = mqtt.Client()
+#client.on_connect = on_connect
+#client.on_message = on_message
 
 print("Connecting to %s" % broker)
-client.connect(broker)
-client.loop_start()
+#client.connect(broker)
+#client.loop_start()
 
 print("Subscribing to %s" % topic)
-client.subscribe(topic)
+#client.subscribe(topic)
 
 # poll until IP address received
-while not ip_flag:
-    print("Waiting for laptop address")
-    time.sleep(1)
+#while not ip_flag:
+ #   print("Waiting for laptop address")
+  #  time.sleep(1)
 
 # send ACK and close server connection
-ack = "ACK" + socket.gethostbyname(socket.gethostname())
-client.publish(topic, ack)
-client.loop_stop()
-client.disconnect()
+#ack = "ACK" + socket.gethostbyname(socket.gethostname())
+#client.publish(topic, ack)
+#client.loop_stop()
+#client.disconnect()
 
 # setup UDP connection
 addr = (UDP_IP, UDP_PORT)
