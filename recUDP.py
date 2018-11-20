@@ -12,6 +12,8 @@ import time
 import socket
 import paho.mqtt.client as mqtt
 
+USE_MQTT = 0
+
 def handle_ctrl_c(signal, frame):
 	global count
 	print(count)
@@ -43,37 +45,40 @@ ack_flag = False
 
 # UDP IP and port number
 UDP_IP = socket.gethostbyname(socket.gethostname())
-UDP_PORT = 5005
+UDP_PORT = 11000
 
-# setup MQTT connection
-broker = "broker.hivemq.com"
-topic = "ece180d/gtuber/unity_ip" 
+print(UDP_IP)
 
-print("Creating new instance")
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+if USE_MQTT:
+	# setup MQTT connection
+	broker = "broker.hivemq.com"
+	topic = "ece180d/gtuber/unity_ip" 
 
-print("Connecting to %s" % broker)
-client.connect(broker)
-client.loop_start()
+	print("Creating new instance")
+	client = mqtt.Client()
+	client.on_connect = on_connect
+	client.on_message = on_message
 
-print("Subscribing to %s" % topic)
-client.subscribe(topic)
+	print("Connecting to %s" % broker)
+	client.connect(broker)
+	client.loop_start()
 
-# poll until connected to server
-while not connected_flag:
-	print("Waiting for connection")
-	time.sleep(1)
+	print("Subscribing to %s" % topic)
+	client.subscribe(topic)
 
-# publish IP address until an ACK is received
-while not ack_flag:
-	print(UDP_IP)
-	client.publish(topic, UDP_IP)
-	time.sleep(1)
+	# poll until connected to server
+	while not connected_flag:
+		print("Waiting for connection")
+		time.sleep(1)
 
-client.loop_stop()
-client.disconnect()
+	# publish IP address until an ACK is received
+	while not ack_flag:
+		print(UDP_IP)
+		client.publish(topic, UDP_IP)
+		time.sleep(1)
+
+	client.loop_stop()
+	client.disconnect()
 
 # setup UDP connection
 print("Setting up UDP connection")
@@ -82,10 +87,8 @@ udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 udp_sock.bind(udp_addr)
 udp_sock.setblocking(0)
 
-local_addr = ("127.0.0.1", "11000")
+local_addr = ("127.0.0.1", 11000)
 local_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-local_sock.bind(local_addr)
-local_sock.setblocking(0)
 
 count = 0
 while True:

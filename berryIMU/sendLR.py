@@ -16,6 +16,8 @@ import IMU
 import datetime
 import os
 
+USE_MQTT = 0
+
 # MQTT callback functions
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -158,35 +160,37 @@ kalmanY = 0.0
 ip_flag = False
 
 # UDP IP and port number variables
-UDP_IP = "131.179.39.90"
+# UDP_IP = "192.168.1.113"
+UDP_IP = "131.179.4.54"
 UDP_PORT = 11000
 
-# Setup MQTT connection
-broker = "broker.hivemq.com"
-topic = "ece180d/gtuber/unity_ip"
+if USE_MQTT:
+    # Setup MQTT connection
+    broker = "broker.hivemq.com"
+    topic = "ece180d/gtuber/unity_ip"
 
-print("Creating new instance")
-#client = mqtt.Client()
-#client.on_connect = on_connect
-#client.on_message = on_message
+    print("Creating new instance")
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
 
-print("Connecting to %s" % broker)
-#client.connect(broker)
-#client.loop_start()
+    print("Connecting to %s" % broker)
+    client.connect(broker)
+    client.loop_start()
 
-print("Subscribing to %s" % topic)
-#client.subscribe(topic)
+    print("Subscribing to %s" % topic)
+    client.subscribe(topic)
 
-# poll until IP address received
-#while not ip_flag:
- #   print("Waiting for laptop address")
-  #  time.sleep(1)
+    # poll until IP address received
+    while not ip_flag:
+       print("Waiting for laptop address")
+       time.sleep(1)
 
-# send ACK and close server connection
-#ack = "ACK" + socket.gethostbyname(socket.gethostname())
-#client.publish(topic, ack)
-#client.loop_stop()
-#client.disconnect()
+    # send ACK and close server connection
+    ack = "ACK" + socket.gethostbyname(socket.gethostname())
+    client.publish(topic, ack)
+    client.loop_stop()
+    client.disconnect()
 
 # setup UDP connection
 addr = (UDP_IP, UDP_PORT)
