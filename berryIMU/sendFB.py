@@ -265,14 +265,12 @@ while True:
     kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
     kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
-    if (kalmanY > 45):
-        sock.sendto("Right", addr)
-    elif (kalmanY < -45):
-        sock.sendto("Left", addr)
-    else:
-        sock.sendto("Straight", addr)
+    if (kalmanX > 30):
+        sock.sendto("Forward", addr)
+    elif (kalmanX < -30):
+        sock.sendto("Backward", addr)
 
-    print("Angle: %d" % kalmanY)
+    print("Angle: %d" % kalmanX)
 
     #slow program down a bit, makes the output more readable
     time.sleep(0.03)

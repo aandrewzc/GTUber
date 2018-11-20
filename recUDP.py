@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 '''
 recUDP.py
 
@@ -12,7 +14,7 @@ import time
 import socket
 import paho.mqtt.client as mqtt
 
-USE_MQTT = 0
+USE_MQTT = 1
 
 def handle_ctrl_c(signal, frame):
 	global count
@@ -36,12 +38,12 @@ def on_message(client, userdata, message):
 	global PI_IP
 	if str(message.payload)[0:3] == "ACK":
 		print("%s" % str(message.payload))
-		PI_IP = str(message.payload)[3:]
-		ack_flag = True 
+		# PI_IP = str(message.payload)[3:]
+		ack_flag += 1 
 
 # flags for connection setup
 connected_flag = False
-ack_flag = False
+ack_flag = 0
 
 # UDP IP and port number
 UDP_IP = socket.gethostbyname(socket.gethostname())
@@ -72,7 +74,7 @@ if USE_MQTT:
 		time.sleep(1)
 
 	# publish IP address until an ACK is received
-	while not ack_flag:
+	while ack_flag < 2:
 		print(UDP_IP)
 		client.publish(topic, UDP_IP)
 		time.sleep(1)
