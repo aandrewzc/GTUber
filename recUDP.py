@@ -96,7 +96,7 @@ count = 0
 while True:
 	try:
 		data, addr = udp_sock.recvfrom(1024)
-		print("received message: %s from %s" % (data, addr[0]))
+		#print("received message: %s from %s" % (data, addr[0]))
 		local_sock.sendto(data, local_addr)
 	except:
 		pass
