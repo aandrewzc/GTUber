@@ -1,24 +1,63 @@
 #!/usr/bin/python
 
 '''
-sendUDP.py
+wheel.py
 
-Script to send IMU data to the laptop, run from the Raspberry Pi
+To be run from the steering wheel raspberry pi.
 
-Waits to receive laptop IP address via MQTT server.
-Once receieved, communication can continue via UDP.
+Sends steering directions to a laptop program via a UDP connection
+Laptop ip address is shared via an MQTT server.
+
+Turning depends on Y angle of IMU.
+
 '''
 
+import sys, signal
 import time
 import socket
 import paho.mqtt.client as mqtt 
 
+import threading
 import math
 import IMU
 import datetime
 import os
 
+DEBUG = 0
 USE_MQTT = 1
+
+
+class ExitThread(threading.Thread):
+    def run(self):
+        print("exit thread started")
+        global UDP_PORT
+        rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        rec_addr = (get_ip(), UDP_PORT)
+        print("%s" % rec_addr[0])
+
+        rec_sock.bind(rec_addr)
+
+        msg, dummy = rec_sock.recvfrom(1024)
+        if msg == "Ctrl-C":
+            print("^C")
+            sock.sendto("ACK", addr)
+            sock.close()
+            os._exit(1)
+
+
+# cleaner output when exiting
+def handle_ctrl_c(signal, frame):
+    global sock
+    try:
+        sock.close()
+    except:
+        pass
+    os._exit(130)
+    # sys.exit(130) # 130 is standard exit code for ctrl-c
+
+#This will capture exit when using Ctrl-C
+signal.signal(signal.SIGINT, handle_ctrl_c)
+
 
 # MQTT callback functions
 def on_connect(client, userdata, flags, rc):
@@ -30,10 +69,24 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, message):
     global ip_flag
     global UDP_IP
-    print("%s" % str(message.payload))
-    UDP_IP = str(message.payload)
-    ip_flag = True
+    if str(message.payload)[0:3] != "ACK":
+        print("%s" % str(message.payload))
+        UDP_IP = str(message.payload)
+        ip_flag = True
 
+
+# get the correct ip address (not 127.0.0.1)
+def get_ip():
+    try:
+        my_ip = socket.gethostbyname(socket.gethostname())
+        if my_ip.startswith("127."):
+            raise
+    except:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 53))
+        my_ip = s.getsockname()[0]
+        s.close()
+    return my_ip
 
 
 # If the IMU is upside down (Skull logo facing up), change this value to 1
@@ -146,7 +199,7 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
     return KFangleX
 
 
-IMU.detectIMU()     #Detect if BerryIMUv1 or BerryIMUv2 is connected.
+# IMU.detectIMU()     #Detect if BerryIMUv1 or BerryIMUv2 is connected.
 IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
 
 gyroXangle = 0.0
@@ -177,36 +230,45 @@ if USE_MQTT:
     client.on_message = on_message
 
     print("Connecting to %s" % broker)
-    client.connect(broker)
+
+    # try until connection successful
+    while True:
+        try:
+            client.connect(broker) 
+        except:
+            pass
+        else:
+            break
+            
     client.loop_start()
 
     print("Subscribing to %s" % topic)
     client.subscribe(topic)
 
-    # poll until IP address received
+    # poll until IP address received           
+    print("Waiting for laptop address")
     while not ip_flag:
-       print("Waiting for laptop address")
        time.sleep(1)
 
     # send ACK and close server connection
-    ack = "ACK " + socket.gethostbyname(socket.gethostname())
+    ack = "ACK wheel" + get_ip()
     client.publish(topic, ack)
     client.loop_stop()
     client.disconnect()
 
 # setup UDP connection
 addr = (UDP_IP, UDP_PORT)
-message = "Hello, world!"
 
 print("UDP target IP: %s" % UDP_IP)
 print("UDP target port: %s" % UDP_PORT)
-print("message: %s" % message)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.setblocking(0)
 
-a = datetime.datetime.now()
+exit_thread = ExitThread()
+exit_thread.start()
 
+a = datetime.datetime.now()
 while True:
     #Read the accelerometer,gyroscope and magnetometer values
     ACCx = IMU.readACCx()
@@ -228,7 +290,9 @@ while True:
     b = datetime.datetime.now() - a
     a = datetime.datetime.now()
     LP = b.microseconds/(1000000*1.0)
-    print("Loop Time %5.2f " % ( LP ))
+
+    if DEBUG:
+    	print("Loop Time %5.2f " % ( LP ))
 
     #Convert Gyro raw to degrees per second
     rate_gyr_x =  GYRx * G_GAIN
@@ -265,12 +329,24 @@ while True:
     kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
     kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
-    if (kalmanX > 30):
-        sock.sendto("Forward", addr)
-    elif (kalmanX < -30):
-        sock.sendto("Backward", addr)
+    if (kalmanY > 0):
+        if (kalmanY > 60):
+            sock.sendto("R3", addr)
+        elif (kalmanY > 30):
+            sock.sendto("R2", addr)
+        else:
+            sock.sendto("R1", addr)
+    elif (kalmanY < 0):
+        if (kalmanY < -60):
+            sock.sendto("L3", addr)
+        elif (kalmanY < -30):
+            sock.sendto("L2", addr)
+        else:
+            sock.sendto("L1", addr)    
+    else:
+        sock.sendto("Straight", addr)
 
-    print("Angle: %d" % kalmanX)
-
-    #slow program down a bit, makes the output more readable
-    time.sleep(0.03)
+    if DEBUG:
+    	print("Angle: %d" % kalmanY)
+    	#slow program down a bit, makes the output more readable
+    	time.sleep(0.03)
