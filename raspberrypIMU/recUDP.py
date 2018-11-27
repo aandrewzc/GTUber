@@ -19,8 +19,32 @@ NUM_PIS = 2
 count = 0
 
 def handle_ctrl_c(signal, frame):
-	global count
+	global count, udp_sock, local_sock
 	print(count)
+
+	# tell the wheel and pedal to exit
+	exit_flag = 0
+	while not exit_flag:
+		try:
+			try:
+				udp_sock.sendto("Ctrl-C", wheel_addr)
+				print("Sent Ctrl-C to wheel at %s" % wheel_addr[0])
+			except:
+				pass
+
+			try:
+				udp_sock.sendto("Ctrl-C", pedal_addr)
+				print("Sent Ctrl-C to pedal at %s" % wheel_addr[0])
+			except:
+				pass
+
+			exit_flag = 1
+			udp_sock.close()
+
+		except NameError:
+			print("exiting")
+			break
+
 	sys.exit(130) # 130 is standard exit code for ctrl-c
 
 #This will capture exit when using Ctrl-C
@@ -37,11 +61,15 @@ def on_connect(client, userdata, flags, rc):
         print("Error connecting to broker")
 
 def on_message(client, userdata, message):
-	global ack_flag
-	global PI_IP
+	global ack_flag, wheel_addr, pedal_addr, UDP_PORT
 	if str(message.payload)[0:3] == "ACK":
-		print("%s" % str(message.payload))
-		# PI_IP = str(message.payload)[3:]
+		print("%s" % str(message.payload))	
+		if str(message.payload)[4:9] == "wheel":
+			wheel_addr = (str(message.payload)[9:], UDP_PORT)
+			print("wheel connected at %s" % wheel_addr[0])
+		elif str(message.payload)[4:9] == "pedal":
+			pedal_addr = (str(message.payload)[9:], UDP_PORT)
+			print("pedal connected at %s" % pedal_addr[0])
 		ack_flag += 1 
 
 
@@ -68,6 +96,11 @@ ack_flag = 0
 UDP_IP = get_ip()
 UDP_PORT = 11000
 
+# pedal and wheel addresses
+wheel_addr = ("", 0)
+pedal_addr = ("", 0)
+
+
 print(UDP_IP)
 
 if USE_MQTT:
@@ -93,8 +126,9 @@ if USE_MQTT:
 		time.sleep(1)
 
 	# publish IP address until an ACK is received
+	print("Waiting for ACKs")
 	while ack_flag < NUM_PIS:
-		print(UDP_IP)
+		# print(UDP_IP)
 		client.publish(topic, UDP_IP)
 		time.sleep(1)
 
@@ -115,7 +149,7 @@ while True:
 	try:
 		data, addr = udp_sock.recvfrom(1024)
 		print("received message: %s from %s" % (data, addr[0]))
-		local_sock.sendto(data, local_addr)
+		# local_sock.sendto(data, local_addr)
 	except:
 		pass
 	count += 1
