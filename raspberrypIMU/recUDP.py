@@ -148,13 +148,8 @@ local_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 while True:
 	try:
 		data, addr = udp_sock.recvfrom(1024)
-<<<<<<< HEAD:recUDP.py
-		#print("received message: %s from %s" % (data, addr[0]))
-		local_sock.sendto(data, local_addr)
-=======
 		print("received message: %s from %s" % (data, addr[0]))
-		# local_sock.sendto(data, local_addr)
->>>>>>> 2220f931e1dcfd1f35b252faa86d13aae9efb3ee:raspberrypIMU/recUDP.py
+		local_sock.sendto(data, local_addr)
 	except:
 		pass
 	count += 1
