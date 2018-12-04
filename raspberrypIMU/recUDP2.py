@@ -28,6 +28,8 @@ local_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 local_sock.bind(local_addr)
 local_sock.setblocking(0)
 
+send_addr = ("127.0.0.1", 8881)
+
 count = 0
 while True:
 	try:
@@ -36,5 +38,10 @@ while True:
 	except:
 		pass
 	count += 1
+
+	if count == 100000:
+		out = local_sock.sendto("hello", send_addr)
+		print("sent hello %d" % out)
+		break
 
 

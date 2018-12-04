@@ -23,7 +23,7 @@ import IMU
 import datetime
 import os
 
-DEBUG = 1
+DEBUG = 0
 USE_MQTT = 1
 
 class ExitThread(threading.Thread):
@@ -327,11 +327,11 @@ while True:
     kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
     kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
-    if (kalmanX > 60):
+    if (kalmanX > 160):
         sock.sendto("F3", addr)
-    elif (kalmanX > 30):
+    elif (kalmanX > 140):
         sock.sendto("F2", addr)
-    elif (kalmanX > 0):
+    elif (kalmanX > 133):
         sock.sendto("F1", addr)
 
     if DEBUG:

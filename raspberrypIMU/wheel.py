@@ -331,18 +331,18 @@ while True:
 
     if (kalmanY > 0):
         if (kalmanY > 60):
-            sock.sendto("R3", addr)
+            sock.sendto("L3", addr)
         elif (kalmanY > 30):
-            sock.sendto("R2", addr)
-        else:
-            sock.sendto("R1", addr)
+            sock.sendto("L2", addr)
+        elif (kalmanY > 10):
+            sock.sendto("L1", addr)
     elif (kalmanY < 0):
         if (kalmanY < -60):
-            sock.sendto("L3", addr)
+            sock.sendto("R3", addr)
         elif (kalmanY < -30):
-            sock.sendto("L2", addr)
-        else:
-            sock.sendto("L1", addr)    
+            sock.sendto("R2", addr)
+        elif (kalmanY < -10):
+            sock.sendto("R1", addr)    
     else:
         sock.sendto("Straight", addr)
 

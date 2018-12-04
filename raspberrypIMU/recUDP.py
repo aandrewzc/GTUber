@@ -13,15 +13,34 @@ import sys, signal
 import time
 import socket
 import paho.mqtt.client as mqtt
+import threading
+import os
+
 
 USE_MQTT = 1
 NUM_PIS = 2
 count = 0
 
-def handle_ctrl_c(signal, frame):
-	global count, udp_sock, local_sock
-	print(count)
+class ListenThread(threading.Thread):
+    def run(self):
+        print("listen thread started")
+        global LOCAL_IP
+        rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        rec_addr = (LOCAL_IP, 8881)
+        print("%s" % rec_addr[0])
+        rec_sock.bind(rec_addr)
 
+        msg, dummy = rec_sock.recvfrom(1024)
+        print(msg)
+        
+        
+        rec_sock.close()
+        kill_sensors()
+        os._exit(1)
+
+
+def kill_sensors():
+	global count, udp_sock, local_sock
 	# tell the wheel and pedal to exit
 	exit_flag = 0
 	while not exit_flag:
@@ -34,7 +53,7 @@ def handle_ctrl_c(signal, frame):
 
 			try:
 				udp_sock.sendto("Ctrl-C", pedal_addr)
-				print("Sent Ctrl-C to pedal at %s" % wheel_addr[0])
+				print("Sent Ctrl-C to pedal at %s" % pedal_addr[0])
 			except:
 				pass
 
@@ -45,7 +64,12 @@ def handle_ctrl_c(signal, frame):
 			print("exiting")
 			break
 
-	sys.exit(130) # 130 is standard exit code for ctrl-c
+def handle_ctrl_c(signal, frame):
+	global count
+	print(count)
+	kill_sensors()
+	os._exit(1)
+
 
 #This will capture exit when using Ctrl-C
 signal.signal(signal.SIGINT, handle_ctrl_c)
@@ -96,6 +120,9 @@ ack_flag = 0
 UDP_IP = get_ip()
 UDP_PORT = 11000
 
+LOCAL_IP = "127.0.0.1"
+LOCAL_PORT = 11000
+
 # pedal and wheel addresses
 wheel_addr = ("", 0)
 pedal_addr = ("", 0)
@@ -142,14 +169,24 @@ udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 udp_sock.bind(udp_addr)
 udp_sock.setblocking(0)
 
-local_addr = ("127.0.0.1", 11000)
+local_addr = (LOCAL_IP, LOCAL_PORT)
 local_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+local_sock.setblocking(0)
+
+listen_thread = ListenThread()
+listen_thread.start()
 
 while True:
 	try:
 		data, addr = udp_sock.recvfrom(1024)
-		print("received message: %s from %s" % (data, addr[0]))
+		# print("received message: %s from %s" % (data, addr[0]))
 		local_sock.sendto(data, local_addr)
+		# try:
+		# 	a, b = local_sock.recvfrom(1024)
+		# 	print(a)
+		# 	break
+		# except:
+		# 	pass
 	except:
 		pass
 	count += 1
