@@ -329,9 +329,9 @@ while True:
 
     if (kalmanX > 160):
         sock.sendto("F3", addr)
-    elif (kalmanX > 140):
+    elif (kalmanX > 150):
         sock.sendto("F2", addr)
-    elif (kalmanX > 133):
+    elif (kalmanX > 140):
         sock.sendto("F1", addr)
 
     if DEBUG:

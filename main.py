@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 
 '''
-recUDP.py
+main.py
 
 Script to receive IMU data, run on a laptop
 
@@ -16,31 +16,35 @@ import paho.mqtt.client as mqtt
 import threading
 import os
 
+import speech_part
+
 
 USE_MQTT = 1
 NUM_PIS = 2
-count = 0
 
-class ListenThread(threading.Thread):
+send_data = True
+check_passenger = True
+
+class ListenUnity(threading.Thread):
     def run(self):
+        global LOCAL_IP, send_data, check_passenger
+
         print("listen thread started")
-        global LOCAL_IP
         rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         rec_addr = (LOCAL_IP, 8881)
         print("%s" % rec_addr[0])
         rec_sock.bind(rec_addr)
 
-        msg, dummy = rec_sock.recvfrom(1024)
-        print(msg)
-        
-        
-        rec_sock.close()
-        kill_sensors()
-        os._exit(1)
-
+        while True:
+	        msg, dummy = rec_sock.recvfrom(1024)
+	        print(msg)
+	        if (msg == "pickup"):
+				send_data = False
+				check_passenger = True
+				
 
 def kill_sensors():
-	global count, udp_sock, local_sock
+	global udp_sock, local_sock
 	# tell the wheel and pedal to exit
 	exit_flag = 0
 	while not exit_flag:
@@ -65,8 +69,6 @@ def kill_sensors():
 			break
 
 def handle_ctrl_c(signal, frame):
-	global count
-	print(count)
 	kill_sensors()
 	os._exit(1)
 
@@ -173,22 +175,33 @@ local_addr = (LOCAL_IP, LOCAL_PORT)
 local_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 local_sock.setblocking(0)
 
-listen_thread = ListenThread()
+listen_thread = ListenUnity()
 listen_thread.start()
 
 while True:
-	try:
-		data, addr = udp_sock.recvfrom(1024)
-		# print("received message: %s from %s" % (data, addr[0]))
-		local_sock.sendto(data, local_addr)
-		# try:
-		# 	a, b = local_sock.recvfrom(1024)
-		# 	print(a)
-		# 	break
-		# except:
-		# 	pass
-	except:
-		pass
-	count += 1
+	if send_data:
+		try:
+			data, addr = udp_sock.recvfrom(1024)
+			# print("received message: %s from %s" % (data, addr[0]))
+			local_sock.sendto(data, local_addr)
+		except:
+			pass
+	else: 
+		if check_passenger:
+			print("Checking passenger identity")
+			try:
+				correct_answer = speech_part.test_for_passenger("Joe")
+			except:
+				correct_answer = True
+			if correct_answer:
+				print("Identity verified!")
+				local_sock.sendto("correct", local_addr)
+			else:
+				print("Wrong passenger...")
+				local_sock.sendto("wrong", local_addr)
+			check_passenger = False
+
+
+
 
 

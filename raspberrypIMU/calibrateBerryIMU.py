@@ -18,13 +18,9 @@ import datetime
 
 
 def handle_ctrl_c(signal, frame):
-    print " "
-    print "magXmin = ",  magXmin
-    print "magYmin = ",  magYmin
-    print "magZmin = ",  magZmin
-    print "magXmax = ",  magXmax
-    print "magYmax = ",  magYmax
-    print "magZmax = ",  magZmax
+    global count, total
+    print("averages: x_drift = %5.2f y_drift = %5.2f z_drift = %5.2f" % (total[0]/count, total[1]/count, total[2]/count))
+
     sys.exit(130) # 130 is standard exit code for ctrl-c
 
 # IMU.detectIMU()
@@ -32,38 +28,26 @@ IMU.initIMU()
 
 #This will capture exit when using Ctrl-C
 signal.signal(signal.SIGINT, handle_ctrl_c)
+G_GAIN = 0.070  # [deg/s/LSB]  If you change the dps for gyro, you need to update this value accordingly
 
-a = datetime.datetime.now()
-
-#Preload the variables used to keep track of the minimum and maximum values
-magXmin = 32767
-magYmin = 32767
-magZmin = 32767
-magXmax = -32767
-magYmax = -32767
-magZmax = -32767
-
+count = 0
+total = [0,0,0]
 while True:
     #Read magnetometer values
-    MAGx = IMU.readMAGx()
-    MAGy = IMU.readMAGy()
-    MAGz = IMU.readMAGz()
+    GYRx = IMU.readGYRx()
+    GYRy = IMU.readGYRy()
+    GYRz = IMU.readGYRz()
+
+    rate_gyr_x =  GYRx * G_GAIN
+    rate_gyr_y =  GYRy * G_GAIN
+    rate_gyr_z =  GYRz * G_GAIN
     
-    if MAGx > magXmax:
-        magXmax = MAGx
-    if MAGy > magYmax:
-        magYmax = MAGy
-    if MAGz > magZmax:
-        magZmax = MAGz
+    total[0] += rate_gyr_x
+    total[1] += rate_gyr_y
+    total[2] += rate_gyr_z
+    count += 1
 
-    if MAGx < magXmin:
-        magXmin = MAGx
-    if MAGy < magYmin:
-        magYmin = MAGy
-    if MAGz < magZmin:
-        magZmin = MAGz
-
-    print(" magXmin  %i  magYmin  %i  magZmin  %i  ## magXmax  %i  magYmax  %i  magZmax %i  " %(magXmin,magYmin,magZmin,magXmax,magYmax,magZmax))
+    print("x:%5.2f  y:%5.2f  z:%5.2f" % (rate_gyr_x, rate_gyr_y, rate_gyr_z))
 
     #slow program down a bit, makes the output more readable
     time.sleep(0.03)

@@ -40,7 +40,7 @@ while True:
 	count += 1
 
 	if count == 100000:
-		out = local_sock.sendto("hello", send_addr)
+		out = local_sock.sendto("pickup", send_addr)
 		print("sent hello %d" % out)
 		break
 
