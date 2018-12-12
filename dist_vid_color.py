@@ -3,6 +3,7 @@ from imutils import paths
 import numpy as np
 import imutils
 import cv2
+import time
  
 def find_marker(image):
 	
@@ -76,7 +77,16 @@ def	drunkTest():
 
 	desiredDistance = 84;
 	returnThreshold  = 24;
+	
+	#distance1  = ((desiredDistance - returnThreshold)/8)*1 + returnThreshold
+	#distance2  = ((desiredDistance - returnThreshold)/8)*2 + returnThreshold
+	#distance3  = ((desiredDistance - returnThreshold)/8)*3 + returnThreshold
+	#distance4  = ((desiredDistance - returnThreshold)/8)*4 + returnThreshold
+	#distance5  = ((desiredDistance - returnThreshold)/8)*5 + returnThreshold
+	#distance6  = ((desiredDistance - returnThreshold)/8)*6 + returnThreshold
+	#distance7  = ((desiredDistance - returnThreshold)/8)*7 + returnThreshold
 
+	time.sleep(3)
 	cap = cv2.VideoCapture(0)
 
 	while(True):
@@ -89,11 +99,21 @@ def	drunkTest():
 		except:
 			pass
 
-	focalLength = (marker[1][0] * KNOWN_DISTANCE) / KNOWN_WIDTH
+	focalLength = (260 * KNOWN_DISTANCE) / KNOWN_WIDTH
 
+	
+	distance1NotReached = True;
+	distance2NotReached = True;
+	distance3NotReached = True;
+	distance4NotReached = True;
+	distance5NotReached = True;
+	distance6NotReached = True;
+	distance7NotReached = True;
 	distanceNotReached = True;
 	returnNotReached = True;
+	
 	while(distanceNotReached or returnNotReached):
+	#while(distanceNotReached or returnNotReached or distance1NotReached or distance2NotReached or distance3NotReached or distance4NotReached or distance5NotReached or distance6NotReached or distance7NotReached):
 	
 		while(True):
 			try:
@@ -108,9 +128,30 @@ def	drunkTest():
 		
 		inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
 		
-		if(distanceNotReached == False):
+		if distanceNotReached == False:
 			if inches < returnThreshold:
 				returnNotReached = False
+		#if distance1NotReached == False:
+			#if inches > distance1 and inches < distance2:
+			#	distance1NotReached == False;
+	#	if distance2NotReached == False:
+	#		if inches > distance2 and inches < distance3:
+	#			distance1NotReached == False;
+	#	if distance3NotReached == False:
+	#		if inches > distance3 and inches < distance4:
+	#			distance1NotReached == False;
+	#	if distance4NotReached == False:
+	#		if inches > distance4 and inches < distance5:
+	#			distance1NotReached == False;
+	#	if distance5NotReached == False:
+	#		if inches > distance5 and inches < distance6:
+	#			distance1NotReached == False;
+	#	if distance6NotReached == False:
+	#		if inches > distance6 and inches < distance7:
+	#			distance1NotReached == False;
+	#	if distance7NotReached == False:
+	#		if inches > distance7 and inches < destiredDistance:
+	#			distance1NotReached == False;		
 		if inches > desiredDistance:
 			distanceNotReached = False
 		
