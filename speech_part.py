@@ -59,7 +59,6 @@ def test_for_passenger(name):
     microphone = sr.Microphone()
 
     # listen to microphone and make guess
-    guess = recognize_speech_from_mic(recognizer, microphone)
     for i in range(PROMPT_LIMIT):
         print("Speak into the microphone.")
         guess = recognize_speech_from_mic(recognizer, microphone)
