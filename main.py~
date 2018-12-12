@@ -209,7 +209,7 @@ while True:
 				local_sock.sendto("wrong", local_addr)
 	elif drunk_test:
 		print("Drunk test underway")
-		time.sleep(10)
+		time.sleep(5)
 		if(dist_vid_color.drunkTest()):
 			drunk_test = False
 			send_data = True 

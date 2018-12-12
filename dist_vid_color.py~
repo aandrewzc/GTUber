@@ -176,6 +176,6 @@ def	drunkTest():
 
 	cap.release()
 	cv2.destroyAllWindows()
-	return True
+	return
 	
-
+drunkTest()
