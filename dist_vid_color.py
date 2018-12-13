@@ -35,15 +35,15 @@ def filter_to_color (frame):
 	
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) 
-	lower_red = np.array([0,30,0]) 
-	upper_red = np.array([120,255,50])
+	lower_red = np.array([0,50,0]) 
+	upper_red = np.array([150,255,70])
 	mask = cv2.inRange(hsv, lower_red, upper_red) 
 		# Display the resulting frame
 	res = cv2.bitwise_and(frame,frame, mask= mask) 
 
 		
 	boundaries = [
-		([0, 30, 0], [120, 255, 50])]
+		([0, 50, 0], [150, 255, 70])]
 
 	for (lower, upper) in boundaries:
 			# create NumPy arrays from the boundaries
@@ -99,7 +99,7 @@ def	drunkTest():
 		except:
 			pass
 
-	focalLength = (260 * KNOWN_DISTANCE) / KNOWN_WIDTH
+	focalLength = (190 * KNOWN_DISTANCE) / KNOWN_WIDTH
 
 	
 	distance1NotReached = True;
@@ -176,6 +176,6 @@ def	drunkTest():
 
 	cap.release()
 	cv2.destroyAllWindows()
-	return True
+	return
 	
-
+drunkTest()
