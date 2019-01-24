@@ -28,21 +28,21 @@ drunk_test = False
 
 class ListenUnity(threading.Thread):
     def run(self):
-        global LOCAL_IP, send_data, check_passenger, drunk_test
+		global LOCAL_IP, send_data, check_passenger, drunk_test
 
-        print("listen thread started")
-        rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        rec_addr = (LOCAL_IP, 8881)
-        print("%s" % rec_addr[0])
-        rec_sock.bind(rec_addr)
+		print("listen thread started")
+		rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+		rec_addr = (LOCAL_IP, 8881)
+		print("%s" % rec_addr[0])
+		rec_sock.bind(rec_addr)
 
-        while True:
-	        msg, dummy = rec_sock.recvfrom(1024)
-	        print(msg)
-	        if (msg == "pickup"):
+		while True:
+			msg, dummy = rec_sock.recvfrom(1024)
+			print(msg)
+			if (msg == "pickup"):
 				send_data = False
 				check_passenger = True
-		elif (msg == "police"):
+			elif (msg == "police"):
 				send_data = False
 				check_passenger = False
 				drunk_test = True 
@@ -174,7 +174,13 @@ if USE_MQTT:
 print("Setting up UDP connection")
 udp_addr = (UDP_IP, UDP_PORT)
 udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-udp_sock.bind(udp_addr)
+try:
+	udp_sock.bind(udp_addr)
+except Exception as e:
+	print("Check that Unity receive socket closed properly: " + str(e))
+	kill_sensors()
+	os._exit(1)
+
 udp_sock.setblocking(0)
 
 local_addr = (LOCAL_IP, LOCAL_PORT)

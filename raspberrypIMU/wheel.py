@@ -98,18 +98,6 @@ G_GAIN = 0.070  # [deg/s/LSB]  If you change the dps for gyro, you need to updat
 AA =  0.40      # Complementary filter constant
 
 
-################# Compass Calibration values ############
-# Use calibrateBerryIMU.py to get calibration values 
-# Calibrating the compass isnt mandatory, however a calibrated 
-# compass will result in a more accurate heading value.
-
-magXmin =  -2456
-magYmin =  -468
-magZmin =  -964
-magXmax =  1035
-magYmax =  2108
-magZmax =  1185
-
 #Kalman filter variables
 Q_angle = 0.02
 Q_gyro = 0.0015
@@ -277,14 +265,6 @@ while True:
     GYRx = IMU.readGYRx()
     GYRy = IMU.readGYRy()
     GYRz = IMU.readGYRz()
-    MAGx = IMU.readMAGx()
-    MAGy = IMU.readMAGy()
-    MAGz = IMU.readMAGz()  
-
-    #Apply compass calibration    
-    MAGx -= (magXmin + magXmax) /2 
-    MAGy -= (magYmin + magYmax) /2 
-    MAGz -= (magZmin + magZmax) /2 
     
     ##Calculate loop Period(LP). How long between Gyro Reads
     b = datetime.datetime.now() - a
@@ -329,24 +309,20 @@ while True:
     kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
     kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
-    if (kalmanY > 0):
-        if (kalmanY > 60):
-            sock.sendto("L3", addr)
-        elif (kalmanY > 30):
-            sock.sendto("L2", addr)
-        elif (kalmanY > 10):
-            sock.sendto("L1", addr)
-    elif (kalmanY < 0):
-        if (kalmanY < -60):
-            sock.sendto("R3", addr)
-        elif (kalmanY < -30):
-            sock.sendto("R2", addr)
-        elif (kalmanY < -10):
-            sock.sendto("R1", addr)    
-    else:
-        sock.sendto("Straight", addr)
+
+    # -90 = right turn = +1
+    # +90 = left turn = -1
+
+    value = -kalmanY/90.0
+    if value > 1:
+        value = 1
+    elif value < -1:
+        value = -1
+
+    tilt = kalmanX/90.0
+    sock.sendto("w:%.2f,%.2f" % (value, tilt), addr)
 
     if DEBUG:
-    	print("Angle: %d" % kalmanY)
+    	print("AngleY: %d, AngleX: %d, value: %.2f, tilt: %.2f" % (kalmanY, kalmanX, value, tilt))
     	#slow program down a bit, makes the output more readable
     	time.sleep(0.03)
