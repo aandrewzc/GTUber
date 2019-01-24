@@ -33,17 +33,19 @@ def distance_to_camera(knownWidth, focalLength, perWidth):
 	
 def filter_to_color (frame):
 	
+
+	
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) 
-	lower_red = np.array([0,50,0]) 
-	upper_red = np.array([150,255,70])
-	mask = cv2.inRange(hsv, lower_red, upper_red) 
+	lower_green = np.array([40,0,50]) 
+	upper_green = np.array([80,255,170])
+	mask = cv2.inRange(hsv, lower_green, upper_green) 
 		# Display the resulting frame
 	res = cv2.bitwise_and(frame,frame, mask= mask) 
 
 		
 	boundaries = [
-		([0, 50, 0], [150, 255, 70])]
+		([40,0, 50], [80, 255, 170])]
 
 	for (lower, upper) in boundaries:
 			# create NumPy arrays from the boundaries
@@ -52,9 +54,9 @@ def filter_to_color (frame):
 	 
 			# find the colors within the specified boundaries and apply
 			# the mask
-			mask = cv2.inRange(frame, lower, upper)
+			mask = cv2.inRange(hsv, lower, upper)
 			output = cv2.bitwise_and(frame, frame, mask = mask)
-	 
+	
 			# show the images
 			#cv2.imshow("output", output)
 	return output
@@ -130,7 +132,7 @@ def	drunkTest():
 		
 		if distanceNotReached == False:
 			if inches < returnThreshold:
-				returnNotReached = False
+				returnNotReached = True
 		#if distance1NotReached == False:
 			#if inches > distance1 and inches < distance2:
 			#	distance1NotReached == False;
@@ -176,6 +178,6 @@ def	drunkTest():
 
 	cap.release()
 	cv2.destroyAllWindows()
-	return
+	return True
 	
 drunkTest()
