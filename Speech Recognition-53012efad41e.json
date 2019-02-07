@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "speech-recognition-225304",
+  "private_key_id": "53012efad41e89ff23214df2c2c096b3d33e2c89",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQD3MJM5gqsc/dyi\nM3T0GJbN9X+wRvdM9jxLFzU0IEIxCM8sGEFhVbnpzc7uxPEbo6OxLk23cC2nYKIz\nzyHrDWO5o5Q9CrMzZibcuo0Uh4dHdzfrAKwIsT/nR9f6U0fYVRWZ2mUzxV+uEjAH\nc78cVuJ7kky/aJ5qXT23asSYHSk8/eG/5uQXG4Dr0udW/GxTDM6ORZlzjY33qLPs\n7ooKtWdlxbm20bZAzEPH71QS9OOTsn66oKPVL0MGapGJ+WJTlOJdVBMZKoxs9nvI\n1vsiguxzbn1pTvY39JaZw/AqfSkf5BT3g1sokSGOtHI2byiuhAOBy6B3h3DNozPq\nxLmNffJdAgMBAAECggEAI/WBSVG4rj5A4SiuqA7Gq13+Dgj4002TzlGpN/TEZEk1\niCLcKfp0Ue6SXpowP/bRaoZDoH6VaZ6tYe+NLdo0Cm6hMzMSCBVhbGVH/jdMBumx\nLQLbQ+VzGCRTpzMDxdT00D2c0Mfy6An1yjO8lrUN++93sjWYK/1166+Au2csl1ZH\nVTWAcmz601O75mAF+AyW5vvXBhY1XZLMbB2jEsuP3sX6NGWJ793PNz/u61HFBT+h\neW7+U9+EvV2MGsn7UkL9LfmBLSsP3giKGdCRxzN9fAqxPHE7DXBCbwwFOvjVi2Sd\nbs9aVi5LwUa+hRREnWlnv7xWndIXoKaFMIs/HO7USQKBgQD/MQuBl7WV7zVbb7Gf\n2GSLSdJtdfxJl8Th8aGBg8vNahnFGi7wFf3+ysvbGOgOn0yrxK4qYYHFF3WPf2SW\nmQZdPQcgm6ROfCVl8ZToY7nhqmLTl7zhuWmrl+ZtMLoRb6or3+LV3ArlpChaGq1e\n/d9FyAe9IUiBSp5HzfNGahyC+QKBgQD3+Qpzu1qUYzw/vdyVEXFmFfFGdICE+sSH\n9bNf4NfEcMOJ8h6IV9RzL6Ez0A4m4uLeItnrAXeLFKEfiulE57hZqs/Ap7dCYBt0\neJtmiUn69kJwzTOMPiuLEEyobXji/Duv+uvbT8UW60CLfwA4XngfS5NluBa9VRW/\n1rIpug/fhQKBgQD023dh4lJ+yeaVlIeHi1d1+uBo3TO03WYxMes43WAY+jw9zlDJ\nVyC+cJHH6Y8IMLudePtweNzOYyMPDDpU8gGURzFmjVDLaf1sYq/xh3bc2+M1ibvX\njlOhLQARNxbiEhXjQVBiyV6/V5LMWhqOMeQhDby3MY9jV1imJyvNHZW76QKBgGnN\nxgrpZtWnnd5oqUSlg6gWNrNkJC4ZPV/xkw6WxhmYL6adOy/boddf/D06Sb+H0VsM\nrcSbBKHANJtbzvpKkJsZybkfFo9oqG5Cw7O1Ym6FQoYU2Ci/oh6c3siCpTDchK8q\nthYGbEbCK/EZSEPE8yYPPh4JtRIlyrjm52/sZrdtAoGBALLE7SP11kkUT6LOLN/f\n9e4nlb56fpRChVMhPjYTKjHN65si8sfuF8dAlJJlWwQA2a6gKUzLYe6MuSGeBC2j\nHaSgDkaPep8r0xXrp1pQPGNq75xT4icarUN5DuQZsVj9tkXV4AG6uzLiEKcTNTDf\nffrFgEzGOaTbfxTKEDU2WVtL\n-----END PRIVATE KEY-----\n",
+  "client_email": "danatovey@speech-recognition-225304.iam.gserviceaccount.com",
+  "client_id": "115329888069318664555",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/danatovey%40speech-recognition-225304.iam.gserviceaccount.com"
+}
