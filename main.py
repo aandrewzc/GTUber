@@ -26,9 +26,12 @@ send_data = True
 check_passenger = False
 drunk_test = False 
 
+passenger_name = ""
+
+
 class ListenUnity(threading.Thread):
     def run(self):
-		global LOCAL_IP, send_data, check_passenger, drunk_test
+		global LOCAL_IP, send_data, check_passenger, drunk_test, passenger_name
 
 		print("listen thread started")
 		rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -39,9 +42,13 @@ class ListenUnity(threading.Thread):
 		while True:
 			msg, dummy = rec_sock.recvfrom(1024)
 			print(msg)
-			if (msg == "pickup"):
+			# if (msg == "pickup"):
+			msg_type = msg.split(":")[0]
+			if (msg_type == "pickup"):
 				send_data = False
 				check_passenger = True
+				passenger_name = msg.split(":")[1]
+
 			elif (msg == "police"):
 				send_data = False
 				check_passenger = False
@@ -198,21 +205,26 @@ while True:
 			local_sock.sendto(data, local_addr)
 		except:
 			pass
+
 	elif check_passenger: 
 		while check_passenger:
 			print("Checking passenger identity")
 			try:
-				correct_answer = speech_part.test_for_passenger("Joe")
+				correct_answer = speech_part.test_for_passenger(passenger_name)
 			except:
 				correct_answer = True
+
+			result = "pickup:" + passenger_name + ","
+
 			if correct_answer:
 				print("Identity verified!")
-				local_sock.sendto("correct", local_addr)
+				local_sock.sendto(result + "correct", local_addr)
 				check_passenger = False
 				send_data = True
 			else:
 				print("Wrong passenger...")
-				local_sock.sendto("wrong", local_addr)
+				local_sock.sendto(result + "incorrect", local_addr)
+
 	elif drunk_test:
 		print("Drunk test underway")
 		time.sleep(10)
