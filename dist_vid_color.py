@@ -4,21 +4,17 @@ import numpy as np
 import imutils
 import cv2
 import time
+import math
  
 def find_marker(image):
 	
-	# convert the image to grayscale, blur it, and detect edges
-	#hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV) 
-	
-	#rgb = cv2.cvtColor(mask, cv2.COLOR_HSV2RGB)	
-	#gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)	
+	# convert the image to grayscale, blur it, and detect edges	
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 	gray = cv2.GaussianBlur(gray, (9, 9), 0) 
 
 	edged = cv2.Canny(gray, 35, 125)
  
 	# find the contours in the edged image and keep the largest one;
-	# we'll assume that this is our piece of paper in the image
 	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 	c = max(cnts, key = cv2.contourArea)
@@ -26,156 +22,226 @@ def find_marker(image):
 	# compute the bounding box of the of the paper region and return it
 	return cv2.minAreaRect(c)
 		
-
 def distance_to_camera(knownWidth, focalLength, perWidth):
 	# compute and return the distance from the maker to the camera
 	return (knownWidth * focalLength) / perWidth
 	
-def filter_to_color (frame):
+def filter_to_color (frame, ranges3):
+	#Save the ranges that are imported
+	ranges4 = ranges3
 	
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 	hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) 
-	lower_red = np.array([0,50,0]) 
-	upper_red = np.array([150,255,70])
-	mask = cv2.inRange(hsv, lower_red, upper_red) 
-		# Display the resulting frame
+	#Create boundaries
+	lower_green = np.array([ranges4[0], ranges4[2], ranges4[4]])
+	upper_green = np.array([ranges4[1], ranges4[3], ranges4[5]])
+	mask = cv2.inRange(hsv, lower_green, upper_green) 
 	res = cv2.bitwise_and(frame,frame, mask= mask) 
-
-		
+	
 	boundaries = [
-		([0, 50, 0], [150, 255, 70])]
-
+		( [ranges4[0], ranges4[2], ranges4[4]], [ranges4[1], ranges4[3], ranges4[5]])]
 	for (lower, upper) in boundaries:
 			# create NumPy arrays from the boundaries
 			lower = np.array(lower, dtype = "uint8")
 			upper = np.array(upper, dtype = "uint8")
-	 
 			# find the colors within the specified boundaries and apply
 			# the mask
-			mask = cv2.inRange(frame, lower, upper)
+			mask = cv2.inRange(hsv, lower, upper)
 			output = cv2.bitwise_and(frame, frame, mask = mask)
-	 
-			# show the images
-			#cv2.imshow("output", output)
 	return output
+		
+def	drunkTest(ranges1):
+	#Save ranges that are imported
+	ranges2 = ranges1
+	
+	#Set the thresholds for failing
+	Fail_Range = 200;
+	leftThreshold = math.floor(300-Fail_Range/2)
+	rightThreshold = math.floor(300 + Fail_Range/2)
+	fail = False
 	
 	
-def	drunkTest():
-
-	# initialize the known distance from the camera to the object, which
-	# in this case is 24 inches
-	KNOWN_DISTANCE = 24.0
+	# initialize the known distance from the camera to the object
+	KNOWN_DISTANCE = 12.0
 	 
-	# initialize the known object width, which in this case, the piece of
-	# paper is 12 inches wide
+	# initialize the known object width
 	KNOWN_WIDTH = 9.0
 	 
-	# load the furst image that contains an object that is KNOWN TO BE 2 feet
-	# from our camera, then find the paper marker in the image, and initialize
-	# the focal length
-	#image = cv2.imread("images/2ft.png")
-
+	#Set distances needed to walk back and fourth
 	desiredDistance = 84;
 	returnThreshold  = 24;
 	
-	#distance1  = ((desiredDistance - returnThreshold)/8)*1 + returnThreshold
-	#distance2  = ((desiredDistance - returnThreshold)/8)*2 + returnThreshold
-	#distance3  = ((desiredDistance - returnThreshold)/8)*3 + returnThreshold
-	#distance4  = ((desiredDistance - returnThreshold)/8)*4 + returnThreshold
-	#distance5  = ((desiredDistance - returnThreshold)/8)*5 + returnThreshold
-	#distance6  = ((desiredDistance - returnThreshold)/8)*6 + returnThreshold
-	#distance7  = ((desiredDistance - returnThreshold)/8)*7 + returnThreshold
 
 	time.sleep(3)
 	cap = cv2.VideoCapture(0)
-
+	
+	#Take frame, filter, and find object
 	while(True):
 		try:
 			ret, frame = cap.read()
-			output = filter_to_color(frame)
+			output = filter_to_color(frame, ranges2)
 			marker = find_marker(output)
-			print(marker[1][0])
 			break
 		except:
 			pass
 
-	focalLength = (190 * KNOWN_DISTANCE) / KNOWN_WIDTH
+	focalLength = (450 * KNOWN_DISTANCE) / KNOWN_WIDTH
 
-	
-	distance1NotReached = True;
-	distance2NotReached = True;
-	distance3NotReached = True;
-	distance4NotReached = True;
-	distance5NotReached = True;
-	distance6NotReached = True;
-	distance7NotReached = True;
 	distanceNotReached = True;
 	returnNotReached = True;
 	
+	#Continually repeat until distances are reached
 	while(distanceNotReached or returnNotReached):
-	#while(distanceNotReached or returnNotReached or distance1NotReached or distance2NotReached or distance3NotReached or distance4NotReached or distance5NotReached or distance6NotReached or distance7NotReached):
-	
-		while(True):
-			try:
-				ret, frame = cap.read()
-				output = filter_to_color(frame)
-				marker = find_marker(output)
-				break
-			except:
-				pass
-		
-		
-		
-		inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
-		
+		inches = 200
+		rect_width = 330
+		rect_length = 430
+		change_threshold = 0.7
+		flag = True
+		while (flag == True):
+			while(True):
+				try:
+					ret, frame = cap.read()
+					output = filter_to_color(frame, ranges2)
+					marker = find_marker(output)
+					break
+				except:
+					pass
+
+			
+			
+			inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
+			
+			#The object should never be more than eight feet away
+			if inches < 96:
+				flag = False
+		#Prompt player to walk forward at seven feet		
 		if distanceNotReached == False:
+			cv2.putText(output, "Walk Forward, Now", (output.shape[1] - 600, output.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
 			if inches < returnThreshold:
 				returnNotReached = False
-		#if distance1NotReached == False:
-			#if inches > distance1 and inches < distance2:
-			#	distance1NotReached == False;
-	#	if distance2NotReached == False:
-	#		if inches > distance2 and inches < distance3:
-	#			distance1NotReached == False;
-	#	if distance3NotReached == False:
-	#		if inches > distance3 and inches < distance4:
-	#			distance1NotReached == False;
-	#	if distance4NotReached == False:
-	#		if inches > distance4 and inches < distance5:
-	#			distance1NotReached == False;
-	#	if distance5NotReached == False:
-	#		if inches > distance5 and inches < distance6:
-	#			distance1NotReached == False;
-	#	if distance6NotReached == False:
-	#		if inches > distance6 and inches < distance7:
-	#			distance1NotReached == False;
-	#	if distance7NotReached == False:
-	#		if inches > distance7 and inches < destiredDistance:
-	#			distance1NotReached == False;		
+				
+		#Player is back within two feet
 		if inches > desiredDistance:
 			distanceNotReached = False
+			
+		#Show "straight" boundaries
+		cv2.line(output,(leftThreshold,0),(leftThreshold, 500),(0,0,255),3)
+		cv2.line(output,(rightThreshold,0),(rightThreshold,500),(0,0,255),3)
 		
+		#If player goes outside boundaries at any time, he/she fails
+		if marker[0][0] < leftThreshold or marker[0][0] > rightThreshold:
+			fail = True
 		
-		
-		
-		#box = cv2.cv.BoxPoints(marker) if imutils.is_cv2() else cv2.boxPoints(marker)
-		
-		#if imutils.is_cv2()
-		#	box = cv2.cv.BoxPoints(marker)
-		#else
-		#	box = cv2.boxPoints(marker)	
-
+		#Display marker and distance
 		box = cv2.boxPoints(marker)
 		box = np.int0(box)
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
 		cv2.putText(output, "%.2fft" % (inches / 12), (output.shape[1] - 200, output.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		cv2.imshow('output',output) 
+		
 
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 
 	cap.release()
 	cv2.destroyAllWindows()
-	return
+	if(fail == True):
+		return False
+	else:
+		return True
+
+def calibration ():
+	#Set parameters for box
+	frame_height = 480
+	frame_width = 640
+	center_x = int(round(frame_width/2))
+	center_y = int(round(frame_height/2))
+	box_width = int(round(frame_width/10))
+	box_height = int(round(frame_height/8))
+
+
+	#Intitialize camera and timer
+	start_time = time.time()
+	cap1 = cv2.VideoCapture(0)
 	
-drunkTest()
+	#Countdown and display box
+	i  = 0
+	count_down = 10
+	count_down_color = (0,255,0)
+	flag = True
+	while flag:
+		ret, frame = cap1.read()
+		frame = cv2.flip(frame,1)
+		if (time.time() - start_time > 10):
+			flag = False
+		if(time.time() - start_time > i):
+			count_down  = (10-i)
+			i = i +1
+		if (count_down > 3):
+			count_down_color = (0,255,0)
+		else:
+			count_down_color = (0,0,255)
+		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0))
+		cv2.putText(frame, "%.0f" % count_down, (frame.shape[1] - 350, frame.shape[0] - 400), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
+		cv2.imshow('frame',frame)
+		if cv2.waitKey(1) == 27:
+			break  # esc to quit
+	
+	
+	#Crop only box from image
+	cropped = frame[center_y - box_height:center_y + box_height, center_x - box_width: center_x + box_height]
+	cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2HSV)
+	
+	#Initialize parameters
+	H_min = 179
+	H_max = 0
+	S_min = 255
+	S_max = 0
+	V_min = 255
+	V_max = 0
+	
+	#Find minimum and maxmimum pixel by pixel
+	i = 1
+	j = 1
+	while (i< 2*box_width):
+		while(j< 2*box_height):
+			color = cropped[i,j]
+			if(color[0] < H_min):
+				H_min = color[0]
+			if (color[0] > H_max):
+				H_max = color[0]
+			if(color[1] < S_min):
+				S_min = color[1]
+			if(color[1] > S_max):
+				S_max = color[1]
+			if(color[2] < V_min):
+				V_min = color[2]
+			if(color[2] > V_max):
+				V_max = color[2]
+			j = j+1;
+		i = i+1
+	
+	
+			
+	cap1.release()
+	cv2.destroyAllWindows()
+	
+	#Widen ranges by multiples
+	H_min = H_min*0.85
+	H_max = min(H_max*1.1, 179)
+	S_min = S_min*0.7
+	S_max = min(S_max*1.7, 255)
+	V_min = V_min*0.5
+	V_max = min(V_max*1.7, 255)
+	
+	#print(H_min)
+	#print(H_max)
+	#print(S_min)
+	#print(S_max)
+	#print(V_min)
+	#print(V_max)
+	return	[H_min, H_max, S_min, S_max, V_min, V_max]
+
+
+a = calibration()
+drunkTest(a)
