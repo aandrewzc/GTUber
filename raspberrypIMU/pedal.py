@@ -318,8 +318,12 @@ while True:
     # max speed 160 = 1
     # stopped 140 = -1
     value = (kalmanX - 150)/10.0
-    sock.sendto("p:%.2f" % value, addr)
-
+    try: 
+        sock.sendto("p:%.2f" % value, addr)
+    except:
+        print("error sending")
+        pass
+        
     if DEBUG:
         print("Angle: %d, value: %.2f" % (kalmanX, value))
         #slow program down a bit, makes the output more readable
