@@ -24,6 +24,7 @@ import datetime
 import os
 
 DEBUG = 0
+DATA = 1
 USE_MQTT = 1
 
 class ExitThread(threading.Thread):
@@ -45,11 +46,15 @@ class ExitThread(threading.Thread):
 
 # cleaner output when exiting
 def handle_ctrl_c(signal, frame):
-    global sock
+    global sock, file
     try:
         sock.close()
     except:
         pass
+
+    if DATA:
+        file.close()
+
     os._exit(130)
     # sys.exit(130) # 130 is standard exit code for ctrl-c
 
@@ -254,6 +259,9 @@ sock.setblocking(0)
 exit_thread = ExitThread()
 exit_thread.start()
 
+if DATA:
+    file = open("pedal.txt", "w")
+
 a = datetime.datetime.now()
 while True:
     #Read the accelerometer,gyroscope and magnetometer values
@@ -310,10 +318,16 @@ while True:
     # max speed 160 = 1
     # stopped 140 = -1
     value = (kalmanX - 150)/10.0
-    sock.sendto("p:%.2f" % value, addr)
-
+    try:
+        sock.sendto("p:%.2f" % value, addr)
+    except:
+        pass
 
     if DEBUG:
         print("Angle: %d, value: %.2f" % (kalmanX, value))
         #slow program down a bit, makes the output more readable
         time.sleep(0.03)
+
+    if DATA:
+        file.write("%.2f,%.2f\n" % (kalmanX, value))
+

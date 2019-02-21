@@ -24,6 +24,7 @@ import datetime
 import os
 
 DEBUG = 0
+DATA = 1
 USE_MQTT = 1
 
 
@@ -47,11 +48,16 @@ class ExitThread(threading.Thread):
 
 # cleaner output when exiting
 def handle_ctrl_c(signal, frame):
-    global sock
+    global sock, raw, mapped
     try:
         sock.close()
     except:
         pass
+
+    if DATA:
+        raw.close()
+        mapped.close()
+
     os._exit(130)
     # sys.exit(130) # 130 is standard exit code for ctrl-c
 
@@ -256,6 +262,10 @@ sock.setblocking(0)
 exit_thread = ExitThread()
 exit_thread.start()
 
+if DATA:
+    raw = open("wheel_raw.txt", "w")
+    mapped = open("wheel_mapped.txt", "w")
+
 a = datetime.datetime.now()
 while True:
     #Read the accelerometer,gyroscope and magnetometer values
@@ -309,7 +319,6 @@ while True:
     kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
     kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
 
-
     # -90 = right turn = +1
     # +90 = left turn = -1
 
@@ -320,9 +329,16 @@ while True:
         value = -1
 
     tilt = kalmanX/90.0
-    sock.sendto("w:%.2f,%.2f" % (value, tilt), addr)
+    try: 
+        sock.sendto("w:%.2f,%.2f" % (value, tilt), addr)
+    except:
+        pass
 
     if DEBUG:
     	print("AngleY: %d, AngleX: %d, value: %.2f, tilt: %.2f" % (kalmanY, kalmanX, value, tilt))
     	#slow program down a bit, makes the output more readable
     	time.sleep(0.03)
+
+    if DATA:
+        raw.write("%.2f,%.2f\n" % (kalmanY, kalmanX))
+        mapped.write("%.2f,%.2f\n" % (value, tilt))
