@@ -54,11 +54,15 @@ def	drunkTest(ranges1):
 	#Save ranges that are imported
 	ranges2 = ranges1
 	
+	frame_height = 480
+	frame_width = 600
+	
 	#Set the thresholds for failing
 	Fail_Range = 200;
 	leftThreshold = math.floor(300-Fail_Range/2)
 	rightThreshold = math.floor(300 + Fail_Range/2)
 	fail = False
+	failcount = 0;
 	
 	
 	# initialize the known distance from the camera to the object
@@ -79,6 +83,7 @@ def	drunkTest(ranges1):
 	while(True):
 		try:
 			ret, frame = cap.read()
+			frame = cv2.flip(frame,1)
 			output = filter_to_color(frame, ranges2)
 			marker = find_marker(output)
 			break
@@ -89,6 +94,7 @@ def	drunkTest(ranges1):
 
 	distanceNotReached = True;
 	returnNotReached = True;
+	distanceReachedCount = 0;
 	
 	#Continually repeat until distances are reached
 	while(distanceNotReached or returnNotReached):
@@ -101,6 +107,7 @@ def	drunkTest(ranges1):
 			while(True):
 				try:
 					ret, frame = cap.read()
+					frame = cv2.flip(frame,1)
 					output = filter_to_color(frame, ranges2)
 					marker = find_marker(output)
 					break
@@ -116,35 +123,49 @@ def	drunkTest(ranges1):
 				flag = False
 		#Prompt player to walk forward at seven feet		
 		if distanceNotReached == False:
-			cv2.putText(output, "Walk Forward, Now", (output.shape[1] - 600, output.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
+			cv2.putText(output, "Walk Forward, Now", (frame_width - 600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
+			cv2.putText(frame, "Walk Forward, Now", (frame_width - 600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
 			if inches < returnThreshold:
 				returnNotReached = False
 				
 		#Player is back within two feet
 		if inches > desiredDistance:
-			distanceNotReached = False
-			
+			distanceReachedCount = distanceReachedCount +1
+			if distanceReachedCount == 30:
+				distanceNotReached = False
+		
+		Fail_Range = 300*12/inches;
+		leftThreshold = math.floor(300-Fail_Range/2)
+		rightThreshold = math.floor(300 + Fail_Range/2)
+		
 		#Show "straight" boundaries
 		cv2.line(output,(leftThreshold,0),(leftThreshold, 500),(0,0,255),3)
 		cv2.line(output,(rightThreshold,0),(rightThreshold,500),(0,0,255),3)
 		
 		#If player goes outside boundaries at any time, he/she fails
 		if marker[0][0] < leftThreshold or marker[0][0] > rightThreshold:
-			fail = True
+			failcount = failcount+1
 		
 		#Display marker and distance
 		box = cv2.boxPoints(marker)
 		box = np.int0(box)
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
-		cv2.putText(output, "%.2fft" % (inches / 12), (output.shape[1] - 200, output.shape[0] - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		cv2.imshow('output',output) 
-		
+		#cv2.putText(output, "%.2fft" % (inches / 12), (frame_width - 200, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		#cv2.imshow('output',output) 
+		#cv2.resizeWindow('output', frame_width, frame_height)
+		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		cv2.imshow('frame',frame)
+		cv2.resizeWindow('frame', frame_width, frame_height)		
+		#print(output.shape[0])
 
 		if cv2.waitKey(1) & 0xFF == ord('q'):
 			break
 
 	cap.release()
 	cv2.destroyAllWindows()
+	print(failcount)
+	if (failcount > 10):
+		fail = True
 	if(fail == True):
 		return False
 	else:
@@ -182,8 +203,9 @@ def calibration ():
 		else:
 			count_down_color = (0,0,255)
 		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0))
-		cv2.putText(frame, "%.0f" % count_down, (frame.shape[1] - 350, frame.shape[0] - 400), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
+		cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 400), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
 		cv2.imshow('frame',frame)
+		cv2.resizeWindow('frame', frame_width, frame_height)
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
 	
@@ -228,20 +250,21 @@ def calibration ():
 	
 	#Widen ranges by multiples
 	H_min = H_min*0.85
-	H_max = min(H_max*1.1, 179)
+	H_max = min(H_max*1.2, 179)
 	S_min = S_min*0.7
 	S_max = min(S_max*1.7, 255)
 	V_min = V_min*0.5
 	V_max = min(V_max*1.7, 255)
 	
-	#print(H_min)
-	#print(H_max)
-	#print(S_min)
-	#print(S_max)
-	#print(V_min)
-	#print(V_max)
+	print(H_min)
+	print(H_max)
+	print(S_min)
+	print(S_max)
+	print(V_min)
+	print(V_max)
 	return	[H_min, H_max, S_min, S_max, V_min, V_max]
 
 
 a = calibration()
-drunkTest(a)
+b = drunkTest(a)
+print(b)
