@@ -24,7 +24,7 @@ import datetime
 import os
 
 DEBUG = 0
-DATA = 1
+DATA = 0
 USE_MQTT = 1
 
 class ExitThread(threading.Thread):
@@ -318,10 +318,7 @@ while True:
     # max speed 160 = 1
     # stopped 140 = -1
     value = (kalmanX - 150)/10.0
-    try:
-        sock.sendto("p:%.2f" % value, addr)
-    except:
-        pass
+    sock.sendto("p:%.2f" % value, addr)
 
     if DEBUG:
         print("Angle: %d, value: %.2f" % (kalmanX, value))
