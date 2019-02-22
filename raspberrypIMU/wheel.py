@@ -329,11 +329,7 @@ while True:
         value = -1
 
     tilt = kalmanX/90.0
-    try:
-        sock.sendto("w:%.2f,%.2f" % (value, tilt), addr)
-    except:
-        print("error sending")
-        pass
+    sock.sendto("w:%.2f,%.2f" % (value, tilt), addr)
 
     if DEBUG:
     	print("AngleY: %d, AngleX: %d, value: %.2f, tilt: %.2f" % (kalmanY, kalmanX, value, tilt))
