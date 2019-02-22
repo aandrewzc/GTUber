@@ -77,7 +77,7 @@ def on_message(client, userdata, message):
     global UDP_IP
     if str(message.payload)[0:3] != "ACK":
         print("%s" % str(message.payload))
-        UDP_IP = str(message.payload, "utf-8")
+        UDP_IP = message.payload
         ip_flag = True
 
 
@@ -210,7 +210,7 @@ ip_flag = False
 
 # UDP IP and port number variables
 # UDP_IP = "192.168.1.113"
-UDP_IP = '131.179.4.54'
+UDP_IP = "131.179.4.54"
 UDP_PORT = 11000
 
 if USE_MQTT:
