@@ -72,7 +72,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, message):
     global ip_flag
     global UDP_IP
-    if str(message.payload)[0:3] != "ACK":
+    if message.payload[0:3] != b"ACK":
         print("%s" % str(message.payload))
         UDP_IP = message.payload
         ip_flag = True
