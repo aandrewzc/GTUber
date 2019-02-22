@@ -22,7 +22,7 @@ def recognize_speech_from_mic(recognizer, microphone):
     # adjust the recognizer sensitivity to ambient noise and record audio
     # from the microphone
     with microphone as source:
-        recognizer.adjust_for_ambient_noise(source)
+        # recognizer.adjust_for_ambient_noise(source)
         audio = recognizer.listen(source)
 
     # set up the response object
@@ -76,5 +76,5 @@ def test_for_passenger(name):
     print("You said: {}".format(guess["transcription"]))
     
     # determine if guess is correct and return answer
-    guess_is_correct = guess["transcription"].lower() == TARGET.lower()
+    guess_is_correct = guess["transcription"].lower().rstrip() == TARGET.lower()
     return guess_is_correct
