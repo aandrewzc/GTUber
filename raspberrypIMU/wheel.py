@@ -27,7 +27,6 @@ DEBUG = 0
 DATA = 0
 USE_MQTT = 1
 
-
 class ExitThread(threading.Thread):
     def run(self):
         print("exit thread started")
@@ -41,7 +40,7 @@ class ExitThread(threading.Thread):
         msg, dummy = rec_sock.recvfrom(1024)
         if msg == b"Ctrl-C":
             print("^C")
-            sock.sendto("ACK", addr)
+            sock.sendto(b"ACK", addr)
             sock.close()
             os._exit(1)
 
