@@ -211,7 +211,7 @@ ip_flag = False
 # UDP IP and port number variables
 # UDP_IP = "192.168.1.113"
 UDP_IP = "131.179.4.54"
-UDP_PORT = b"11000"
+UDP_PORT = 11000
 
 if USE_MQTT:
     # Setup MQTT connection
@@ -329,7 +329,7 @@ while True:
         value = -1
 
     tilt = kalmanX/90.0
-    sock.sendto("w:%.2f,%.2f" % (value, tilt), addr)
+    sock.sendto(b"w:%.2f,%.2f" % (value, tilt), addr)
 
     if DEBUG:
     	print("AngleY: %d, AngleX: %d, value: %.2f, tilt: %.2f" % (kalmanY, kalmanX, value, tilt))
