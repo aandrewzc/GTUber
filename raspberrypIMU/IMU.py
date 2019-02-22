@@ -63,9 +63,9 @@ def writeGRY(register,value):
 def readACCx():
         acc_l = bus.read_byte_data(ACC_ADDRESS, OUT_X_L_XL)
         acc_h = bus.read_byte_data(ACC_ADDRESS, OUT_X_H_XL)
-	acc_combined = (acc_l | acc_h <<8)
+    acc_combined = (acc_l | acc_h <<8)
 
-	return acc_combined  if acc_combined < 32768 else acc_combined - 65536
+    return acc_combined  if acc_combined < 32768 else acc_combined - 65536
 
 
 def readACCy():
