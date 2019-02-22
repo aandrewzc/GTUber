@@ -211,7 +211,7 @@ ip_flag = False
 # UDP IP and port number variables
 # UDP_IP = "192.168.1.113"
 UDP_IP = "131.179.4.54"
-UDP_PORT = 11000
+UDP_PORT = b"11000"
 
 if USE_MQTT:
     # Setup MQTT connection
