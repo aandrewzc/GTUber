@@ -207,7 +207,7 @@ ip_flag = False
 
 # UDP IP and port number variables
 # UDP_IP = "192.168.1.113"
-UDP_IP = "131.179.4.54"
+UDP_IP = '131.179.4.54'
 UDP_PORT = 11000
 
 if USE_MQTT:
@@ -323,7 +323,7 @@ while True:
     except:
         print("error sending")
         pass
-        
+
     if DEBUG:
         print("Angle: %d, value: %.2f" % (kalmanX, value))
         #slow program down a bit, makes the output more readable
