@@ -38,7 +38,7 @@ class ExitThread(threading.Thread):
         rec_sock.bind(rec_addr)
 
         msg, dummy = rec_sock.recvfrom(1024)
-        if msg == "Ctrl-C":
+        if msg == b"Ctrl-C":
             print("^C")
             sock.sendto("ACK", addr)
             sock.close()
