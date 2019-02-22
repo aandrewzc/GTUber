@@ -246,6 +246,7 @@ if USE_MQTT:
 
     # send ACK and close server connection
     ack = "ACK wheel" + get_ip()
+    print(ack)
     client.publish(topic, ack)
     client.loop_stop()
     client.disconnect()
