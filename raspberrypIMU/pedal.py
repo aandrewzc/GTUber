@@ -74,7 +74,7 @@ def on_message(client, userdata, message):
     global UDP_IP
     if str(message.payload)[0:3] != "ACK":
         print("%s" % str(message.payload))
-        UDP_IP = str(message.payload)
+        UDP_IP = message.payload
         ip_flag = True
 
 
