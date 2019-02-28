@@ -46,12 +46,12 @@ class ListenUnity(threading.Thread):
 				print(msg)
 				# if (msg == "pickup"):
 				msg_type = msg.split(":")[0]
-				if (msg_type == "pickup"):
+				if (msg_type == b"pickup"):
 					send_data = False
 					check_passenger = True
 					passenger_name = msg.split(":")[1]
 
-				elif (msg == "police"):
+				elif (msg == b"police"):
 					send_data = False
 					check_passenger = False
 					drunk_test = True 
@@ -61,29 +61,29 @@ class ListenUnity(threading.Thread):
 				
 
 def kill_sensors():
-	global udp_sock, local_sock
-	# tell the wheel and pedal to exit
-	exit_flag = 0
-	while not exit_flag:
-		try:
-			try:
-				udp_sock.sendto("Ctrl-C", wheel_addr)
-				print("Sent Ctrl-C to wheel at %s" % wheel_addr[0])
-			except:
-				pass
+	global udp_sock, local_sock, wheel_addr, pedal_addr
+	
+	# quit wheel program (if connected)
+	try:
+		udp_sock.sendto(b"Ctrl-C", wheel_addr)
+		print("Sent Ctrl-C to wheel at %s" % wheel_addr[0])
+	except:
+		pass
 
-			try:
-				udp_sock.sendto("Ctrl-C", pedal_addr)
-				print("Sent Ctrl-C to pedal at %s" % pedal_addr[0])
-			except:
-				pass
+	# quit pedal program (if connected)
+	try:
+		udp_sock.sendto(b"Ctrl-C", pedal_addr)
+		print("Sent Ctrl-C to pedal at %s" % pedal_addr[0])
+	except:
+		pass
 
-			exit_flag = 1
-			udp_sock.close()
+	# close sockets (if created)
+	try:
+		udp_sock.close()
+		local_sock.close()
+	except:
+		pass
 
-		except NameError:
-			print("exiting")
-			break
 
 def handle_ctrl_c(signal, frame):
 	kill_sensors()
@@ -105,13 +105,14 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, message):
 	global ack_flag, wheel_addr, pedal_addr, UDP_PORT
-	if str(message.payload)[0:3] == "ACK":
+
+	if message.payload[0:3] == b"ACK":
 		print("%s" % str(message.payload))	
-		if str(message.payload)[4:9] == "wheel":
-			wheel_addr = (str(message.payload)[9:], UDP_PORT)
+		if message.payload[4:9] == b"wheel":
+			wheel_addr = (message.payload[9:], UDP_PORT)
 			print("wheel connected at %s" % wheel_addr[0])
-		elif str(message.payload)[4:9] == "pedal":
-			pedal_addr = (str(message.payload)[9:], UDP_PORT)
+		elif message.payload[4:9] == b"pedal":
+			pedal_addr = (message.payload[9:], UDP_PORT)
 			print("pedal connected at %s" % pedal_addr[0])
 		ack_flag += 1 
 
@@ -218,11 +219,11 @@ while True:
 			except:
 				correct_answer = True
 
-			result = "pickup:" + passenger_name + ","
+			result = b"pickup:" + passenger_name + b","
 
 			if correct_answer:
 				print("Identity verified!")
-				local_sock.sendto(result + "correct", local_addr)
+				local_sock.sendto(result + b"correct", local_addr)
 				check_passenger = False
 				send_data = True
 			else:
@@ -235,7 +236,7 @@ while True:
 		if(dist_vid_color.drunkTest()):
 			drunk_test = False
 			send_data = True 
-			local_sock.sendto("passed", local_addr)
+			local_sock.sendto(b"passed", local_addr)
 
 
 

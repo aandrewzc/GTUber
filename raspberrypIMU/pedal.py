@@ -56,7 +56,7 @@ def handle_ctrl_c(signal, frame):
         file.close()
 
     os._exit(130)
-    # sys.exit(130) # 130 is standard exit code for ctrl-c
+
 
 #This will capture exit when using Ctrl-C
 signal.signal(signal.SIGINT, handle_ctrl_c)

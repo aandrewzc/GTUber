@@ -44,20 +44,20 @@ def detectIMU():
 
 
 def writeAG(register,value):
-        bus.write_byte_data(ACC_ADDRESS , register, value)
-        return -1
+    bus.write_byte_data(ACC_ADDRESS , register, value)
+    return -1
 
 def writeACC(register,value):
-        bus.write_byte_data(ACC_ADDRESS , register, value)
-        return -1
+    bus.write_byte_data(ACC_ADDRESS , register, value)
+    return -1
 
 def writeMAG(register,value):
-        bus.write_byte_data(MAG_ADDRESS, register, value)
-        return -1
+    bus.write_byte_data(MAG_ADDRESS, register, value)
+    return -1
 
 def writeGRY(register,value):
-        bus.write_byte_data(GYR_ADDRESS, register, value)
-        return -1
+    bus.write_byte_data(GYR_ADDRESS, register, value)
+    return -1
 
 
 def readACCx():
