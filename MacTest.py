@@ -16,10 +16,12 @@ def find_marker(image):
  
 	# find the contours in the edged image and keep the largest one;
 	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	if imutils.is_cv2():
+		print(5)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-	print(1)
+	#print(1)
 	c = max(cnts, key = cv2.contourArea)
-	print(2)
+	#print(2)
  
 	# compute the bounding box of the of the paper region and return it
 	return cv2.minAreaRect(c)
@@ -79,7 +81,7 @@ def	drunkTest(ranges1):
 	
 
 	time.sleep(3)
-	cap = cv2.VideoCapture(0)
+	cap = cv2.VideoCapture(1)
 	
 	#Take frame, filter, and find object
 	while(True):
@@ -87,7 +89,7 @@ def	drunkTest(ranges1):
 			ret, frame = cap.read()
 			frame = cv2.flip(frame,1)
 			output = filter_to_color(frame, ranges2)
-			marker = find_marker(frame)
+			marker = find_marker(output)
 			break
 		except:
 			pass
@@ -111,7 +113,7 @@ def	drunkTest(ranges1):
 					ret, frame = cap.read()
 					frame = cv2.flip(frame,1)
 					output = filter_to_color(frame, ranges2)
-					marker = find_marker(frame)
+					marker = find_marker(output)
 					break
 				except:
 					pass
@@ -185,7 +187,7 @@ def calibration ():
 
 	#Intitialize camera and timer
 	start_time = time.time()
-	cap1 = cv2.VideoCapture(0)
+	cap1 = cv2.VideoCapture(1)
 	
 	#Countdown and display box
 	i  = 0
