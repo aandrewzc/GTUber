@@ -20,7 +20,7 @@ def find_marker(image):
 		print(5)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 	print(0)
-	N = len(cnts)
+	N = len(cnts[0])
 	print(N)
 	print(1001)
 	print(cnts)
