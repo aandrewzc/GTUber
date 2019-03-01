@@ -20,7 +20,15 @@ def find_marker(image):
 		print(5)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 	#print(1)
-	c = max(cnts, key = cv2.contourArea)
+	N = len(cnts)
+	i = 0;
+	m = 0;
+	while (1<N):
+		if(cnts[i].cv2.contourArea() > cnts[m].cv2.contourArea()):
+			m = i
+		i = i+1
+		
+	c = cnts[m]
 	#print(2)
  
 	# compute the bounding box of the of the paper region and return it
@@ -154,12 +162,12 @@ def	drunkTest(ranges1):
 		box = cv2.boxPoints(marker)
 		box = np.int0(box)
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
-		#cv2.putText(output, "%.2 fft" % (inches / 12), (frame_width - 200, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		#cv2.imshow('output',output) 
-		#cv2.resizeWindow('output', frame_width, frame_height)
+		cv2.putText(output, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		cv2.imshow('output',output) 
+		cv2.resizeWindow('output', frame_width, frame_height)
 		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		cv2.imshow('frame',frame)
-		cv2.resizeWindow('frame', frame_width, frame_height)		
+		#cv2.imshow('frame',frame)
+		#cv2.resizeWindow('frame', frame_width, frame_height)		
 		#print(output.shape[0])
 
 		if cv2.waitKey(1) & 0xFF == ord('q'):
