@@ -77,7 +77,7 @@ def	drunkTest(ranges1):
 	
 
 	time.sleep(3)
-	cap = cv2.VideoCapture(0)
+	cap = cv2.VideoCapture(1)
 	
 	#Take frame, filter, and find object
 	while(True):
@@ -183,7 +183,7 @@ def calibration ():
 
 	#Intitialize camera and timer
 	start_time = time.time()
-	cap1 = cv2.VideoCapture(0)
+	cap1 = cv2.VideoCapture(1)
 	
 	#Countdown and display box
 	i  = 0
