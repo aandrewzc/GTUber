@@ -16,10 +16,11 @@ def find_marker(image):
  
 	# find the contours in the edged image and keep the largest one;
 	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+	print(1000)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 	#N = len(cnts[0])
 	#print(N)
-	#print(1001)
+	print(1001)
 	#print(cnts)
 	#print(1002)
 	#i = 1;
@@ -35,7 +36,7 @@ def find_marker(image):
 	#	i = i+1
 		
 	c = cnts[0]
-	#print(2)
+	print(2)
  
 	# compute the bounding box of the of the paper region and return it
 	return cv2.minAreaRect(c)
