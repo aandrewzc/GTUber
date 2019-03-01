@@ -24,7 +24,12 @@ def find_marker(image):
 	i = 0;
 	m = 0;
 	while (1<N):
-		if(cnts[i].cv2.contourArea() > cnts[m].cv2.contourArea()):
+		print(1)
+		i_val = cnts[i].cv2.contourArea()
+		print(2)
+		m_val = cnts[m].cv2.contourArea()
+		print(3)
+		if(i_val > m_val):
 			m = i
 		i = i+1
 		
