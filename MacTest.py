@@ -22,6 +22,9 @@ def find_marker(image):
 	print(0)
 	N = len(cnts)
 	print(N)
+	print(1001)
+	print(cnts)
+	print(1002)
 	i = 1;
 	m = 0;
 	while (i<N):
