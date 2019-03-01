@@ -16,10 +16,7 @@ def find_marker(image):
  
 	# find the contours in the edged image and keep the largest one;
 	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-	if imutils.is_cv2():
-		print(5)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-	print(0)
 	N = len(cnts[0])
 	print(N)
 	print(1001)
@@ -28,11 +25,11 @@ def find_marker(image):
 	i = 1;
 	m = 0;
 	while (i<N):
-		print(1)
+		print(2001)
 		i_val = cnts[i].cv2.contourArea()
-		print(2)
+		print(2002)
 		m_val = cnts[m].cv2.contourArea()
-		print(3)
+		print(2004)
 		if(i_val > m_val):
 			m = i
 		i = i+1
