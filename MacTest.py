@@ -21,9 +21,9 @@ def find_marker(image):
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
 	#print(1)
 	N = len(cnts)
-	i = 0;
+	i = 1;
 	m = 0;
-	while (1<N):
+	while (i<N):
 		print(1)
 		i_val = cnts[i].cv2.contourArea()
 		print(2)
