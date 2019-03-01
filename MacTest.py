@@ -37,9 +37,10 @@ def find_marker(image):
 		
 	c = cnts[0]
 	print(2)
- 
+	m = cv2.minAreaRect(c)
+	print(3)
 	# compute the bounding box of the of the paper region and return it
-	return cv2.minAreaRect(c)
+	return m
 		
 def distance_to_camera(knownWidth, focalLength, perWidth):
 	# compute and return the distance from the maker to the camera
