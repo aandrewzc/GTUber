@@ -262,6 +262,9 @@ def calibration ():
 	print(S_max)
 	print(V_min)
 	print(V_max)
+	
+	print(output.shape[0])
+	
 	return	[H_min, H_max, S_min, S_max, V_min, V_max]
 
 
