@@ -54,13 +54,10 @@ def	drunkTest(ranges1):
 	#Save ranges that are imported
 	ranges2 = ranges1
 	
-	frame_height = 480
-	frame_width = 600
+	frame_height = 960
+	frame_width = 1280
 	
 	#Set the thresholds for failing
-	Fail_Range = 200;
-	leftThreshold = math.floor(300-Fail_Range/2)
-	rightThreshold = math.floor(300 + Fail_Range/2)
 	fail = False
 	failcount = 0;
 	
@@ -134,9 +131,9 @@ def	drunkTest(ranges1):
 			if distanceReachedCount == 30:
 				distanceNotReached = False
 		
-		Fail_Range = 300*12/inches;
-		leftThreshold = math.floor(300-Fail_Range/2)
-		rightThreshold = math.floor(300 + Fail_Range/2)
+		Fail_Range = (frame_width/2)*12/inches;
+		leftThreshold = math.floor(frame_width/2-Fail_Range/2)
+		rightThreshold = math.floor(frame_width/2 + Fail_Range/2)
 		
 		#Show "straight" boundaries
 		cv2.line(output,(leftThreshold,0),(leftThreshold, 500),(0,0,255),3)
@@ -173,8 +170,8 @@ def	drunkTest(ranges1):
 
 def calibration ():
 	#Set parameters for box
-	frame_height = 480
-	frame_width = 640
+	frame_height = 960
+	frame_width = 1280
 	center_x = int(round(frame_width/2))
 	center_y = int(round(frame_height/2))
 	box_width = int(round(frame_width/10))
@@ -262,9 +259,6 @@ def calibration ():
 	print(S_max)
 	print(V_min)
 	print(V_max)
-	
-	print(output.shape[0])
-	
 	return	[H_min, H_max, S_min, S_max, V_min, V_max]
 
 
