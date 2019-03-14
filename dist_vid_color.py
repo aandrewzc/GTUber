@@ -23,7 +23,7 @@ def find_marker(image):
 		cnts = cnts[0]
 	print(1)
 	c = max(cnts, key = cv2.contourArea)
- 	print(2)
+	print(2)
 	# compute the bounding box of the of the paper region and return it
 	to_return = cv2.minAreaRect(c)
 	print(3)
