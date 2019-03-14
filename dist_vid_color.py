@@ -134,8 +134,8 @@ def	drunkTest(ranges1):
 				distanceNotReached = False
 		
 		Fail_Range = (frame_width/2)*12/inches;
-		leftThreshold = math.floor(frame_width/2-Fail_Range/2)
-		rightThreshold = math.floor(frame_width/2 + Fail_Range/2)
+		leftThreshold = int(math.floor(frame_width/2-Fail_Range/2))
+		rightThreshold = int(math.floor(frame_width/2 + Fail_Range/2))
 		
 		#Show "straight" boundaries
 		cv2.line(output,(leftThreshold,0),(leftThreshold, frame_height),(0,0,255),3)
