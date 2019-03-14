@@ -262,7 +262,7 @@ while True:
     sock.setblocking(0)
 
     # only start this once
-    if (!LISTENING):
+    if not LISTENING:
         exit_thread = ExitThread()
         exit_thread.start()
         LISTENING = 1

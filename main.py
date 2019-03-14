@@ -19,7 +19,7 @@ import os
 import speech_part
 import dist_vid_color
 
-USE_MQTT = 0
+USE_MQTT = 1
 NUM_PIS = 2
 
 send_data = True
