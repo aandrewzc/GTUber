@@ -191,7 +191,7 @@ def calibration ():
 			while flag:
 				ret, frame = cap1.read()
 				frame = cv2.flip(frame,1)
-				if (time.time() - start_time > count_down):
+				if (time.time() - start_time > 15):
 					flag = False
 				if(time.time() - start_time > i):
 					count_down  = (count_down-1)
