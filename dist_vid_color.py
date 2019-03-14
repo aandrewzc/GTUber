@@ -189,7 +189,7 @@ def calibration ():
 
 	#Intitialize camera and timer
 	start_time = time.time()
-	cap1 = cv2.VideoCapture(1)
+	cap1 = cv2.VideoCapture(0)
 	
 	#Countdown and display box
 	i  = 0
@@ -212,7 +212,7 @@ def calibration ():
 		#cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0), 5)
 		cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 800), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
-		#cv2.imshow('frame',frame)
+		cv2.imshow('frame',frame)
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
 	
@@ -220,7 +220,6 @@ def calibration ():
 	#Crop only box from image
 	cropped = frame[center_y - box_height:center_y + box_height, center_x - box_width: center_x + box_width]
 	cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2HSV)
-	cv2.imshow('cropped', frame)
 	
 	#Initialize parameters
 	H_min = 179
@@ -254,8 +253,8 @@ def calibration ():
 	
 	
 			
-	#cap1.release()
-	#cv2.destroyAllWindows()
+	cap1.release()
+	cv2.destroyAllWindows()
 	
 	#Widen ranges by multiples
 	H_min = H_min*0.85
