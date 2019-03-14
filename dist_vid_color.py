@@ -208,11 +208,14 @@ def calibration ():
 			count_down_color = (0,255,0)
 		else:
 			count_down_color = (0,0,255)
-		cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
+		#cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
+		#cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0), 5)
 		cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 400), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
 		cv2.imshow('frame',frame)
+		print(1000)
+		print(frame.shape[0])
+		print(fram.shape[1])
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
 	
