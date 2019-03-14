@@ -130,10 +130,10 @@ def	drunkTest(ranges1):
 		#Player is back within two feet
 		if inches > desiredDistance:
 			distanceReachedCount = distanceReachedCount +1
-			if distanceReachedCount == 30:
+			if distanceReachedCount == 15:
 				distanceNotReached = False
 		
-		Fail_Range = (frame_width/2)*12/inches;
+		Fail_Range = (frame_width/1.5)*12/inches;
 		leftThreshold = int(math.floor(frame_width/2-Fail_Range/2))
 		rightThreshold = int(math.floor(frame_width/2 + Fail_Range/2))
 		
