@@ -212,7 +212,7 @@ def calibration ():
 		#cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0), 5)
 		cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 800), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
-		frame = frame[1:400, 1:400]
+		#frame = frame[1:400, 1:400]
 		cv2.imshow('frame',frame)
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
