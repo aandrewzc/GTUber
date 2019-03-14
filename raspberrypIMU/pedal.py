@@ -262,11 +262,8 @@ while True:
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setblocking(0)
 
-    # only start this once
-    if not LISTENING:
-        exit_thread = ExitThread()
-        exit_thread.start()
-        LISTENING = 1
+    exit_thread = ExitThread()
+    exit_thread.start()
 
     if DATA:
         file = open("pedal.txt", "w")
