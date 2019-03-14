@@ -17,7 +17,7 @@ def find_marker(image):
 	# find the contours in the edged image and keep the largest one;
 	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-	if(imutils.is_cv3() or imutil.is_cv4()):
+	if(imutils.is_cv3()):
 		cnts = cnts[1]
 	else:
 		cnts = cnts[0]
