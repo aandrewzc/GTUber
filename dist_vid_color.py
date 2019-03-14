@@ -194,7 +194,7 @@ def calibration ():
 				if (time.time() - start_time > count_down):
 					flag = False
 				if(time.time() - start_time > i):
-					count_down  = (count_down-i)
+					count_down  = (count_down-1)
 					i = i +1
 				if (count_down > 3):
 					count_down_color = (0,255,0)
