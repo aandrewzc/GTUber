@@ -61,8 +61,8 @@ def	drunkTest(ranges1):
 	#Save ranges that are imported
 	ranges2 = ranges1
 	
-	frame_height = 480
-	frame_width = 640
+	frame_height = 960
+	frame_width = 1280
 	
 	#Set the thresholds for failing
 	fail = False
@@ -179,8 +179,8 @@ def	drunkTest(ranges1):
 
 def calibration ():
 	#Set parameters for box
-	frame_height = 480
-	frame_width = 640
+	frame_height = 960
+	frame_width = 1280
 	center_x = int(round(frame_width))
 	center_y = int(round(frame_height))
 	box_width = int(round(frame_width/5))
@@ -213,9 +213,6 @@ def calibration ():
 		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0), 5)
 		cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 400), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
 		cv2.imshow('frame',frame)
-		print(1000)
-		print(frame.shape[0])
-		print(frame.shape[1])
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
 	
