@@ -236,6 +236,7 @@ def calibration ():
 	while (i< 2*box_width):
 		while(j< 2*box_height):
 			color = cropped[i,j]
+			print(color[0]
 			if(color[0] < H_min):
 				H_min = color[0]
 			if (color[0] > H_max):
@@ -254,7 +255,7 @@ def calibration ():
 	
 			
 	cap1.release()
-	#cv2.destroyAllWindows()
+	cv2.destroyAllWindows()
 	
 	#Widen ranges by multiples
 	H_min = H_min*0.85
