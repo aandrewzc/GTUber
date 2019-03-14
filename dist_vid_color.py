@@ -17,17 +17,10 @@ def find_marker(image):
 	# find the contours in the edged image and keep the largest one;
 	cnts = cv2.findContours(edged.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 	cnts = cnts[0] if imutils.is_cv2() else cnts[1]
-	if(imutils.is_cv3()):
-		cnts = cnts[1]
-	else:
-		cnts = cnts[0]
-	print(1)
 	c = max(cnts, key = cv2.contourArea)
-	print(2)
 	# compute the bounding box of the of the paper region and return it
-	to_return = cv2.minAreaRect(c)
-	print(3)
-	return to_return
+	return  cv2.minAreaRect(c)
+	
 		
 def distance_to_camera(knownWidth, focalLength, perWidth):
 	# compute and return the distance from the maker to the camera
