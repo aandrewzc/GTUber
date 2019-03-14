@@ -185,7 +185,7 @@ def calibration ():
 			
 			#Countdown and display box
 			i  = 0
-			count_down = 15
+			count_down = 20
 			count_down_color = (0,255,0)
 			flag = True
 			while flag:
