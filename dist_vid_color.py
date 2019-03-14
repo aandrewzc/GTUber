@@ -215,7 +215,7 @@ def calibration ():
 		cv2.imshow('frame',frame)
 		print(1000)
 		print(frame.shape[0])
-		print(fram.shape[1])
+		print(frame.shape[1])
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
 	
