@@ -69,8 +69,8 @@ def	drunkTest(ranges1):
 	KNOWN_WIDTH = 9.5
 	 
 	#Set distances needed to walk back and fourth
-	desiredDistance = 84
-	returnThreshold  = 24
+	desiredDistance = 60
+	returnThreshold  = 18
 	
 
 	time.sleep(3)
@@ -116,12 +116,12 @@ def	drunkTest(ranges1):
 			inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
 			
 			#The object should never be more than eight feet away
-			if inches < 96:
+			if inches < 120:
 				flag = False
 				
 		#Prompt player to walk forward at seven feet		
-		#if distanceNotReached == False:
-		if True:
+		if distanceNotReached == False:
+		#if True:
 			cv2.putText(output, "Walk Forward, Now", (frame_width-600, frame_height - 250), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
 			cv2.putText(frame, "Walk Forward, Now", (frame_width-600, frame_height- 250), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 0, 0), 8)
 			if inches < returnThreshold:
