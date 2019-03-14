@@ -55,6 +55,11 @@ class ListenUnity(threading.Thread):
 					send_data = False
 					check_passenger = False
 					drunk_test = True 
+					
+				elif (msg == b"quit"):
+					kill_sensors();
+					os._exit(130)
+
 			except:
 				pass
 
@@ -80,6 +85,10 @@ def kill_sensors():
 	# close sockets (if created)
 	try:
 		udp_sock.close()
+	except:
+		pass
+
+	try:
 		local_sock.close()
 	except:
 		pass
