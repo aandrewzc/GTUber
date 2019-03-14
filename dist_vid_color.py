@@ -123,7 +123,7 @@ def	drunkTest(ranges1):
 		if distanceNotReached == False:
 		#if True:
 			cv2.putText(output, "Walk Forward, Now", (200, 480), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
-			cv2.putText(frame, "Walk Forward, Now", (200, 480), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 0, 0), 8)
+			cv2.putText(frame, "Walk Forward, Now", (200, 480), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 0, 0), 4)
 			if inches < returnThreshold:
 				returnNotReached = False
 				
