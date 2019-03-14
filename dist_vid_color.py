@@ -236,7 +236,7 @@ def calibration ():
 	while (i< 2*box_width):
 		while(j< 2*box_height):
 			color = cropped[i,j]
-			print(color[0]
+			print(color[0])
 			if(color[0] < H_min):
 				H_min = color[0]
 			if (color[0] > H_max):
