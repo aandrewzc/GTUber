@@ -183,8 +183,8 @@ def calibration ():
 	frame_width = 1280
 	center_x = int(round(frame_width/2))
 	center_y = int(round(frame_height/2))
-	box_width = int(round(frame_width/5))
-	box_height = int(round(frame_height/4))
+	box_width = int(round(frame_width/10))
+	box_height = int(round(frame_height/8))
 
 
 	#Intitialize camera and timer
