@@ -54,8 +54,8 @@ def	drunkTest(ranges1):
 	#Save ranges that are imported
 	ranges2 = ranges1
 	
-	frame_height = 480
-	frame_width = 640
+	frame_height = 960
+	frame_width = 1280
 	
 	#Set the thresholds for failing
 	fail = False
@@ -118,12 +118,10 @@ def	drunkTest(ranges1):
 			#The object should never be more than eight feet away
 			if inches < 96:
 				flag = False
-		cv2.namedWindow('ouput', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('output', ((frame_width), (frame_height)))		
 		#Prompt player to walk forward at seven feet		
 		if distanceNotReached == False:
-			cv2.putText(output, "Walk Forward, Now", (frame_width-600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
-			cv2.putText(frame, "Walk Forward, Now", (frame_width-600, frame_height-350), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 0, 0), 8)
+			cv2.putText(output, "Walk Forward, Now", (frame_width - 600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
+			cv2.putText(frame, "Walk Forward, Now", (frame_width - 600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
 			if inches < returnThreshold:
 				returnNotReached = False
 				
@@ -134,12 +132,12 @@ def	drunkTest(ranges1):
 				distanceNotReached = False
 		
 		Fail_Range = (frame_width/2)*12/inches;
-		leftThreshold = math.floor(frame_width/2-Fail_Range/2)
-		rightThreshold = math.floor(frame_width/2 + Fail_Range/2)
+		leftThreshold = int(math.floor(frame_width/2-Fail_Range/2))
+		rightThreshold = int(math.floor(frame_width/2 + Fail_Range/2))
 		
 		#Show "straight" boundaries
-		cv2.line(output,(leftThreshold,0),(leftThreshold, frame_height),(0,0,255),3)
-		cv2.line(output,(rightThreshold,0),(rightThreshold,frame_height),(0,0,255),3)
+		cv2.line(output,(leftThreshold,0),(leftThreshold, 500),(0,0,255),3)
+		cv2.line(output,(rightThreshold,0),(rightThreshold,500),(0,0,255),3)
 		
 		#If player goes outside boundaries at any time, he/she fails
 		if marker[0][0] < leftThreshold or marker[0][0] > rightThreshold:
@@ -148,13 +146,13 @@ def	drunkTest(ranges1):
 		#Display marker and distance
 		box = cv2.boxPoints(marker)
 		box = np.int0(box)
-		cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
 		cv2.putText(output, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		#cv2.imshow('output',output) 
+		cv2.imshow('output',output) 
+		cv2.resizeWindow('output', frame_width, frame_height)
 		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		cv2.imshow('frame',frame)	
+		#cv2.imshow('frame',frame)
+		#cv2.resizeWindow('frame', frame_width, frame_height)		
 		#print(output.shape[0])
 
 		if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -172,12 +170,12 @@ def	drunkTest(ranges1):
 
 def calibration ():
 	#Set parameters for box
-	frame_height = 480
-	frame_width = 640
-	center_x = int(round(frame_width))
-	center_y = int(round(frame_height))
-	box_width = int(round(frame_width/5))
-	box_height = int(round(frame_height/4))
+	frame_height = 960
+	frame_width = 1280
+	center_x = int(round(frame_width/2))
+	center_y = int(round(frame_height/2))
+	box_width = int(round(frame_width/10))
+	box_height = int(round(frame_height/8))
 
 
 	#Intitialize camera and timer
@@ -201,11 +199,10 @@ def calibration ():
 			count_down_color = (0,255,0)
 		else:
 			count_down_color = (0,0,255)
-		cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.rectangle(frame, (center_x + box_width, center_y + box_height), (center_x - box_width, center_y - box_height), (255,0,0))
 		cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 400), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
 		cv2.imshow('frame',frame)
+		cv2.resizeWindow('frame', frame_width, frame_height)
 		if cv2.waitKey(1) == 27:
 			break  # esc to quit
 	
