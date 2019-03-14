@@ -189,7 +189,7 @@ def calibration ():
 
 	#Intitialize camera and timer
 	start_time = time.time()
-	cap1 = cv2.VideoCapture(0)
+	cap1 = cv2.VideoCapture(1)
 	
 	#Countdown and display box
 	i  = 0
@@ -232,8 +232,8 @@ def calibration ():
 	#Find minimum and maxmimum pixel by pixel
 	i = 1
 	j = 1
-	while (i< 2*box_width):
-		while(j< 2*box_height):
+	while (i< 2*box_height):
+		while(j< 2*box_width):
 			color = cropped[i,j]
 			print(color[0])
 			if(color[0] < H_min):
