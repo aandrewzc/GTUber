@@ -66,11 +66,11 @@ def	drunkTest(ranges1):
 	KNOWN_DISTANCE = 12.0
 	 
 	# initialize the known object width
-	KNOWN_WIDTH = 9.0
+	KNOWN_WIDTH = 9.5
 	 
 	#Set distances needed to walk back and fourth
-	desiredDistance = 84;
-	returnThreshold  = 24;
+	desiredDistance = 84
+	returnThreshold  = 24
 	
 
 	time.sleep(3)
@@ -153,7 +153,7 @@ def	drunkTest(ranges1):
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
 		cv2.putText(output, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		#cv2.imshow('output',output) 
-		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		cv2.imshow('frame',frame)	
 		#print(output.shape[0])
 
