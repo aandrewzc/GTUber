@@ -220,7 +220,7 @@ def calibration ():
 	#Crop only box from image
 	cropped = frame[center_y - box_height:center_y + box_height, center_x - box_width: center_x + box_width]
 	cropped = cv2.cvtColor(cropped, cv2.COLOR_BGR2HSV)
-	cv2.imshow('cropped', cropped)
+	cv2.imshow('cropped', frame)
 	
 	#Initialize parameters
 	H_min = 179
