@@ -26,6 +26,8 @@ import os
 DEBUG = 0
 DATA = 0
 USE_MQTT = 1
+RESTART = 0
+LISTENING = 0
 
 class ExitThread(threading.Thread):
     def run(self):
@@ -55,7 +57,8 @@ def handle_ctrl_c(signal, frame):
     if DATA:
         file.close()
 
-    os._exit(130)
+    RESTART = 1
+    # os._exit(130)
 
 
 #This will capture exit when using Ctrl-C
@@ -201,130 +204,147 @@ CFangleY = 0.0
 kalmanX = 0.0
 kalmanY = 0.0
 
-
-# flag for connection setup
-ip_flag = False
-
 # UDP IP and port number variables
 # UDP_IP = "192.168.1.113"
 UDP_IP = '131.179.4.54'
 UDP_PORT = 11000
 
-if USE_MQTT:
-    # Setup MQTT connection
-    broker = "broker.hivemq.com"
-    topic = "ece180d/gtuber/unity_ip"
-
-    print("Creating new instance")
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.on_message = on_message
-
-    print("Connecting to %s" % broker)
-    
-    # try until connection successful
-    while True:
-        try:
-            client.connect(broker) 
-        except:
-            pass
-        else:
-            break    
-
-    client.loop_start()
-
-    print("Subscribing to %s" % topic)
-    client.subscribe(topic)
-
-    # poll until IP address received
-    print("Waiting for laptop address")
-    while not ip_flag:
-       time.sleep(1)
-
-    # send ACK and close server connection
-    ack = "ACK pedal" + get_ip()
-    client.publish(topic, ack)
-    client.loop_stop()
-    client.disconnect()
-
-# setup UDP connection
-addr = (UDP_IP, UDP_PORT)
-
-print("UDP target IP: %s" % UDP_IP)
-print("UDP target port: %s" % UDP_PORT)
-
-sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.setblocking(0)
-
-exit_thread = ExitThread()
-exit_thread.start()
-
-if DATA:
-    file = open("pedal.txt", "w")
-
-a = datetime.datetime.now()
+# allows program to run persistently
 while True:
-    #Read the accelerometer,gyroscope and magnetometer values
-    ACCx = IMU.readACCx()
-    ACCy = IMU.readACCy()
-    ACCz = IMU.readACCz()
-    GYRx = IMU.readGYRx()
-    GYRy = IMU.readGYRy()
-    GYRz = IMU.readGYRz()
-    
-    ##Calculate loop Period(LP). How long between Gyro Reads
-    b = datetime.datetime.now() - a
-    a = datetime.datetime.now()
-    LP = b.microseconds/(1000000*1.0)
 
-    if DEBUG:
-        print("Loop Time %5.2f " % ( LP ))
+    # flag for connection setup
+    ip_flag = False
 
-    #Convert Gyro raw to degrees per second
-    rate_gyr_x =  GYRx * G_GAIN
-    rate_gyr_y =  GYRy * G_GAIN
-    rate_gyr_z =  GYRz * G_GAIN
+    if USE_MQTT:
+        # Setup MQTT connection
+        broker = "broker.hivemq.com"
+        topic = "ece180d/gtuber/unity_ip"
 
-    #Calculate the angles from the gyro. 
-    gyroXangle+=rate_gyr_x*LP
-    gyroYangle+=rate_gyr_y*LP
-    gyroZangle+=rate_gyr_z*LP
+        print("Creating new instance")
+        client = mqtt.Client()
+        client.on_connect = on_connect
+        client.on_message = on_message
 
-    #Convert Accelerometer values to degrees
-    if not IMU_UPSIDE_DOWN:
-        # If the IMU is up the correct way (Skull logo facing down), use these calculations
-        AccXangle =  (math.atan2(ACCy,ACCz)*RAD_TO_DEG)
-        AccYangle =  (math.atan2(ACCz,ACCx)+M_PI)*RAD_TO_DEG
-    else:
-        #Us these four lines when the IMU is upside down. Skull logo is facing up
-        AccXangle =  (math.atan2(-ACCy,-ACCz)*RAD_TO_DEG)
-        AccYangle =  (math.atan2(-ACCz,-ACCx)+M_PI)*RAD_TO_DEG
+        print("Connecting to %s" % broker)
+        
+        # try until connection successful
+        while True:
+            try:
+                client.connect(broker) 
+            except:
+                pass
+            else:
+                break    
 
-    #Change the rotation value of the accelerometer to -/+ 180 and
-    #move the Y axis '0' point to up.  This makes it easier to read.
-    if AccYangle > 90:
-        AccYangle -= 270.0
-    else:
-        AccYangle += 90.0
+        client.loop_start()
 
-    #Complementary filter used to combine the accelerometer and gyro values.
-    CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
-    CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
+        print("Subscribing to %s" % topic)
+        client.subscribe(topic)
 
-    #Kalman filter used to combine the accelerometer and gyro values.
-    kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
-    kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
+        # poll until IP address received
+        print("Waiting for laptop address")
+        while not ip_flag:
+           time.sleep(1)
 
-    # max speed 160 = 1
-    # stopped 140 = -1
-    value = (kalmanX - 150)/10.0
-    sock.sendto(b"p:%.2f" % value, addr)
+        # send ACK and close server connection
+        ack = "ACK pedal" + get_ip()
+        client.publish(topic, ack)
+        client.loop_stop()
+        client.disconnect()
 
-    if DEBUG:
-        print("Angle: %d, value: %.2f" % (kalmanX, value))
-        #slow program down a bit, makes the output more readable
-        time.sleep(0.03)
+    # setup UDP connection
+    addr = (UDP_IP, UDP_PORT)
+
+    print("UDP target IP: %s" % UDP_IP)
+    print("UDP target port: %s" % UDP_PORT)
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setblocking(0)
+
+    # only start this once
+    if (!LISTENING):
+        exit_thread = ExitThread()
+        exit_thread.start()
+        LISTENING = 1
 
     if DATA:
-        file.write("%.2f,%.2f\n" % (kalmanX, value))
+        file = open("pedal.txt", "w")
+
+    a = datetime.datetime.now()
+    while True:
+        #Read the accelerometer,gyroscope and magnetometer values
+        ACCx = IMU.readACCx()
+        ACCy = IMU.readACCy()
+        ACCz = IMU.readACCz()
+        GYRx = IMU.readGYRx()
+        GYRy = IMU.readGYRy()
+        GYRz = IMU.readGYRz()
+        
+        ##Calculate loop Period(LP). How long between Gyro Reads
+        b = datetime.datetime.now() - a
+        a = datetime.datetime.now()
+        LP = b.microseconds/(1000000*1.0)
+
+        if DEBUG:
+            print("Loop Time %5.2f " % ( LP ))
+
+        #Convert Gyro raw to degrees per second
+        rate_gyr_x =  GYRx * G_GAIN
+        rate_gyr_y =  GYRy * G_GAIN
+        rate_gyr_z =  GYRz * G_GAIN
+
+        #Calculate the angles from the gyro. 
+        gyroXangle+=rate_gyr_x*LP
+        gyroYangle+=rate_gyr_y*LP
+        gyroZangle+=rate_gyr_z*LP
+
+        #Convert Accelerometer values to degrees
+        if not IMU_UPSIDE_DOWN:
+            # If the IMU is up the correct way (Skull logo facing down), use these calculations
+            AccXangle =  (math.atan2(ACCy,ACCz)*RAD_TO_DEG)
+            AccYangle =  (math.atan2(ACCz,ACCx)+M_PI)*RAD_TO_DEG
+        else:
+            #Us these four lines when the IMU is upside down. Skull logo is facing up
+            AccXangle =  (math.atan2(-ACCy,-ACCz)*RAD_TO_DEG)
+            AccYangle =  (math.atan2(-ACCz,-ACCx)+M_PI)*RAD_TO_DEG
+
+        #Change the rotation value of the accelerometer to -/+ 180 and
+        #move the Y axis '0' point to up.  This makes it easier to read.
+        if AccYangle > 90:
+            AccYangle -= 270.0
+        else:
+            AccYangle += 90.0
+
+        #Complementary filter used to combine the accelerometer and gyro values.
+        CFangleX=AA*(CFangleX+rate_gyr_x*LP) +(1 - AA) * AccXangle
+        CFangleY=AA*(CFangleY+rate_gyr_y*LP) +(1 - AA) * AccYangle
+
+        #Kalman filter used to combine the accelerometer and gyro values.
+        kalmanY = kalmanFilterY(AccYangle, rate_gyr_y,LP)
+        kalmanX = kalmanFilterX(AccXangle, rate_gyr_x,LP)
+
+        # max speed 160 = 1
+        # stopped 140 = -1
+        value = (kalmanX - 150)/10.0
+        try:
+            sock.sendto(b"p:%.2f" % value, addr)
+        except:
+            print("Caught an exception, restarting the UDP connection")
+            sock.close()
+            USE_MQTT = 0
+            break
+
+        if DEBUG:
+            print("Angle: %d, value: %.2f" % (kalmanX, value))
+            #slow program down a bit, makes the output more readable
+            time.sleep(0.03)
+
+        if DATA:
+            file.write("%.2f,%.2f\n" % (kalmanX, value))
+
+        if RESTART:
+            print("Restarting the program")
+            USE_MQTT = 1
+            RESTART = 0;
+            break
 
