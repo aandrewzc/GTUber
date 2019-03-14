@@ -181,8 +181,8 @@ def calibration ():
 	#Set parameters for box
 	frame_height = 960
 	frame_width = 1280
-	center_x = int(round(frame_width))
-	center_y = int(round(frame_height))
+	center_x = int(round(frame_width/2))
+	center_y = int(round(frame_height/2))
 	box_width = int(round(frame_width/5))
 	box_height = int(round(frame_height/4))
 
