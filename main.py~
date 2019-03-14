@@ -202,7 +202,7 @@ local_sock.setblocking(0)
 listen_thread = ListenUnity()
 listen_thread.start()
 
-#dist_vid_color.drunkTest(dist_vid_color.calibration())
+dist_vid_color.drunkTest(dist_vid_color.calibration())
 
 while True:
 	if send_data:
