@@ -118,8 +118,7 @@ def	drunkTest(ranges1):
 			#The object should never be more than eight feet away
 			if inches < 96:
 				flag = False
-		cv2.namedWindow('ouput', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('output', ((frame_width), (frame_height)))		
+				
 		#Prompt player to walk forward at seven feet		
 		if distanceNotReached == False:
 			cv2.putText(output, "Walk Forward, Now", (frame_width-600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
@@ -152,9 +151,9 @@ def	drunkTest(ranges1):
 		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
 		cv2.putText(output, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		#cv2.imshow('output',output) 
+		cv2.imshow('output',output) 
 		cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		cv2.imshow('frame',frame)	
+		#cv2.imshow('frame',frame)	
 		#print(output.shape[0])
 
 		if cv2.waitKey(1) & 0xFF == ord('q'):
