@@ -120,8 +120,8 @@ def	drunkTest(ranges1):
 				flag = False
 				
 		#Prompt player to walk forward at seven feet		
-		if distanceNotReached == False:
-		#if True:
+		#if distanceNotReached == False:
+		if True:
 			cv2.putText(output, "Walk Forward, Now", (frame_width-600, frame_height - 250), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
 			cv2.putText(frame, "Walk Forward, Now", (frame_width-600, frame_height- 250), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 0, 0), 8)
 			if inches < returnThreshold:
@@ -151,7 +151,7 @@ def	drunkTest(ranges1):
 		cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
 		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
-		cv2.putText(output, "%.2fft" % (inches / 12), (frame_width + 600, frame_width - 250), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		cv2.putText(output, "%.2fft" % (inches / 12), (frame_width - 600, frame_width - 250), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		cv2.imshow('output',output) 
 		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		#cv2.imshow('frame',frame)	
