@@ -269,6 +269,6 @@ def calibration ():
 	return	[H_min, H_max, S_min, S_max, V_min, V_max]
 
 
-#a = calibration()
-#b = drunkTest(a)
-#print(b)
+a = calibration()
+b = drunkTest(a)
+print(b)
