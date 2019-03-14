@@ -32,7 +32,7 @@ LISTENING = 0
 class ExitThread(threading.Thread):
     def run(self):
         print("exit thread started")
-        global UDP_PORT
+        global UDP_PORT, RESTART
         rec_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         rec_addr = (get_ip(), UDP_PORT)
         print("%s" % rec_addr[0])
@@ -42,9 +42,10 @@ class ExitThread(threading.Thread):
         msg, dummy = rec_sock.recvfrom(1024)
         if msg == b"Ctrl-C":
             print("^C")
-            sock.sendto(b"ACK", addr)
-            sock.close()
-            os._exit(1)
+            RESTART = 1
+            # sock.sendto(b"ACK", addr)
+            # sock.close()
+            # os._exit(1)
 
 # cleaner output when exiting
 def handle_ctrl_c(signal, frame):
@@ -57,8 +58,8 @@ def handle_ctrl_c(signal, frame):
     if DATA:
         file.close()
 
-    RESTART = 1
-    # os._exit(130)
+    # RESTART = 1
+    os._exit(130)
 
 
 #This will capture exit when using Ctrl-C
@@ -330,7 +331,11 @@ while True:
             sock.sendto(b"p:%.2f" % value, addr)
         except:
             print("Caught an exception, restarting the UDP connection")
-            sock.close()
+            try:
+                sock.close()
+            except:
+                print("Caught another exception. Ignoring this one")
+                pass
             USE_MQTT = 0
             break
 
@@ -344,6 +349,7 @@ while True:
 
         if RESTART:
             print("Restarting the program")
+            sock.close()
             USE_MQTT = 1
             RESTART = 0;
             break
