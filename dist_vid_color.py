@@ -185,16 +185,16 @@ def calibration ():
 			
 			#Countdown and display box
 			i  = 0
-			count_down = 20
+			count_down = 15
 			count_down_color = (0,255,0)
 			flag = True
 			while flag:
 				ret, frame = cap1.read()
 				frame = cv2.flip(frame,1)
-				if (time.time() - start_time > 10):
+				if (time.time() - start_time > count_down):
 					flag = False
 				if(time.time() - start_time > i):
-					count_down  = (10-i)
+					count_down  = (count_down-i)
 					i = i +1
 				if (count_down > 3):
 					count_down_color = (0,255,0)
