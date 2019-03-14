@@ -148,10 +148,8 @@ def	drunkTest(ranges1):
 		#Display marker and distance
 		box = cv2.boxPoints(marker)
 		box = np.int0(box)
-		cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
-		cv2.putText(output, "%.2fft" % (inches / 12), (frame_width - 600, frame_width - 250), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		cv2.putText(output, "%.2fft" % (inches / 12), (640, 480), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		cv2.imshow('output',output) 
 		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
 		#cv2.imshow('frame',frame)	
