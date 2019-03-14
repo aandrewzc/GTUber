@@ -69,8 +69,8 @@ def	drunkTest(ranges1):
 	KNOWN_WIDTH = 9.5
 	 
 	#Set distances needed to walk back and fourth
-	desiredDistance = 84
-	returnThreshold  = 24
+	desiredDistance = 60
+	returnThreshold  = 18
 	
 
 	time.sleep(3)
@@ -116,23 +116,24 @@ def	drunkTest(ranges1):
 			inches = distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])
 			
 			#The object should never be more than eight feet away
-			if inches < 96:
+			if inches < 120:
 				flag = False
 				
 		#Prompt player to walk forward at seven feet		
 		if distanceNotReached == False:
-			cv2.putText(output, "Walk Forward, Now", (frame_width-600, frame_height - 20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
-			cv2.putText(frame, "Walk Forward, Now", (frame_width-600, frame_height-350), cv2.FONT_HERSHEY_SIMPLEX, 4, (255, 0, 0), 8)
+		#if True:
+			cv2.putText(output, "Walk Forward, Now", (200, 480), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 3)
+			cv2.putText(frame, "Walk Forward, Now", (200, 480), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 4)
 			if inches < returnThreshold:
 				returnNotReached = False
 				
 		#Player is back within two feet
 		if inches > desiredDistance:
 			distanceReachedCount = distanceReachedCount +1
-			if distanceReachedCount == 30:
+			if distanceReachedCount == 15:
 				distanceNotReached = False
 		
-		Fail_Range = (frame_width/2)*12/inches;
+		Fail_Range = (frame_width/1.5)*12/inches;
 		leftThreshold = int(math.floor(frame_width/2-Fail_Range/2))
 		rightThreshold = int(math.floor(frame_width/2 + Fail_Range/2))
 		
@@ -147,13 +148,11 @@ def	drunkTest(ranges1):
 		#Display marker and distance
 		box = cv2.boxPoints(marker)
 		box = np.int0(box)
-		cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-		cv2.resizeWindow('frame', ((frame_width), (frame_height)))
 		cv2.drawContours(output, [box], -1, (0, 255, 0), 2)
-		cv2.putText(output, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		cv2.imshow('output',output) 
-		cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
-		#cv2.imshow('frame',frame)	
+		cv2.putText(output, "%.2fft" % (inches / 12), (640, 480), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		#cv2.imshow('output',output) 
+		#cv2.putText(frame, "%.2fft" % (inches / 12), (frame_height - 200, frame_width - 20), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0), 3)
+		cv2.imshow('frame',frame)	
 		#print(output.shape[0])
 
 		if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -186,16 +185,16 @@ def calibration ():
 			
 			#Countdown and display box
 			i  = 0
-			count_down = 10
+			count_down = 15
 			count_down_color = (0,255,0)
 			flag = True
 			while flag:
 				ret, frame = cap1.read()
 				frame = cv2.flip(frame,1)
-				if (time.time() - start_time > 10):
+				if (time.time() - start_time > 15):
 					flag = False
 				if(time.time() - start_time > i):
-					count_down  = (10-i)
+					count_down  = (count_down-1)
 					i = i +1
 				if (count_down > 3):
 					count_down_color = (0,255,0)
@@ -203,10 +202,12 @@ def calibration ():
 					count_down_color = (0,0,255)
 				#cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
 				#cv2.resizeWindow('frame', ((frame_width), (frame_height)))
+				count_down = count_down +1
 				cv2.rectangle(frame, (center_x + box_width+10, center_y + box_height+10), (center_x - box_width- 10, center_y - box_height -10), (255,0,0), 5)
 				cv2.putText(frame, "%.0f" % count_down, (center_x-30, frame_height - 800), cv2.FONT_HERSHEY_SIMPLEX, 2.0, count_down_color, 3)
 				#frame = frame[center_y - box_height:center_y + box_height, center_x - box_width: center_x + box_width]
 				cv2.imshow('frame',frame)
+				count_down = count_down -1;
 				if cv2.waitKey(1) == 27:
 					break  # esc to quit
 			break
@@ -269,6 +270,6 @@ def calibration ():
 	return	[H_min, H_max, S_min, S_max, V_min, V_max]
 
 
-#a = calibration()
-#b = drunkTest(a)
-#print(b)
+a = calibration()
+b = drunkTest(a)
+print(b)
