@@ -1,0 +1,17 @@
+﻿<Properties StartupConfiguration="{69426255-5008-9D20-C145-2DBFDC1FED37}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameText.cs">
+    <Files>
+      <File FileName="Assets/Scripts/TitleSequence.cs" Line="42" Column="44" />
+      <File FileName="Assets/Scripts/ImageRecTrigger.cs" Line="79" Column="19" />
+      <File FileName="Assets/Scripts/GameText.cs" Line="25" Column="5" />
+      <File FileName="Assets/Scripts/PassengerPickup.cs" Line="79" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

@@ -1,0 +1,23 @@
+﻿<Properties StartupConfiguration="{25B742BE-9DA0-0073-090A-CCAEEEF1B3CF}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UnityInputManager.cs">
+    <Files>
+      <File FileName="Assets/Scripts/TutorialText.cs" Line="101" Column="45" />
+      <File FileName="Assets/Scripts/StopSignTrigger.cs" Line="13" Column="88" />
+      <File FileName="Assets/Scripts/TrafficLightTrigger.cs" Line="17" Column="61" />
+      <File FileName="Assets/Scripts/RoadBlockTrigger.cs" Line="12" Column="26" />
+      <File FileName="Assets/Scripts/ScoreManager.cs" Line="48" Column="42" />
+      <File FileName="Assets/Scripts/PassengerDropoff.cs" Line="21" Column="1" />
+      <File FileName="Assets/Scripts/TrafficLightControl.cs" Line="26" Column="11" />
+      <File FileName="Assets/Scripts/PassengerPickup.cs" Line="39" Column="53" />
+      <File FileName="Assets/Scripts/LaneCorrection.cs" Line="14" Column="43" />
+      <File FileName="Assets/Scripts/UnityInputManager.cs" Line="40" Column="30" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
